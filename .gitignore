@@ -1,0 +1,10 @@
+dist/
+build/
+__pycache__/
+*.pyc
+*.key
+*.spec
+venv/
+.venv/
+Claude outputs/
+.release-repo

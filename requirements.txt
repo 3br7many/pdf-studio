@@ -1,0 +1,14 @@
+flask>=3.0
+pypdf>=5.1
+pikepdf>=9.0
+pymupdf>=1.24
+pdfplumber>=0.11
+reportlab>=4.0
+pillow>=10.0
+python-docx>=1.1
+openpyxl>=3.1
+arabic-reshaper>=3.0
+# Pinned below 0.5 deliberately: 0.5+ ships a compiled extension, and
+# Windows Smart App Control blocks unsigned .pyd files — which silently
+# breaks Arabic shaping. 0.4.x is pure Python and produces identical output.
+python-bidi>=0.4.2,<0.5

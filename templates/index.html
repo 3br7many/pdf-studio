@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Studio — Local PDF Toolkit</title>
+<style>
+:root{
+  --bg:#0f1115; --panel:#171a21; --panel2:#1d212a; --line:#2a2f3a;
+  --txt:#e8eaf0; --muted:#9aa3b2; --acc:#4f8cff; --acc2:#7c5cff;
+  --ok:#2ecc8f; --warn:#ffb020; --bad:#ff5f6d; --radius:12px;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f4f6fa; --panel:#ffffff; --panel2:#f0f3f8; --line:#dde3ec;
+         --txt:#141821; --muted:#5d6675; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+     font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;font-size:15px}
+header{display:flex;align-items:center;gap:14px;padding:14px 22px;
+       background:linear-gradient(90deg,var(--acc2),var(--acc));color:#fff}
+header h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.2px}
+header .badge{margin-left:auto;background:rgba(255,255,255,.18);
+       padding:6px 12px;border-radius:20px;font-size:12.5px}
+.wrap{display:flex;min-height:calc(100vh - 58px);align-items:stretch}
+nav{width:212px;flex:0 0 212px;background:var(--panel);border-right:1px solid var(--line);padding:10px 8px}
+nav button{display:flex;gap:9px;align-items:center;width:100%;text-align:left;background:none;border:0;
+       color:var(--muted);padding:10px 12px;border-radius:10px;cursor:pointer;font:inherit;font-size:14.5px}
+nav button:hover{background:var(--panel2);color:var(--txt)}
+nav button.on{background:var(--acc);color:#fff;font-weight:600}
+nav .sep{height:1px;background:var(--line);margin:8px 6px}
+main{flex:1;padding:20px 24px;overflow:auto}
+h2{margin:0 0 4px;font-size:19px}
+.sub{color:var(--muted);font-size:13.5px;margin-bottom:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+label{display:block;font-size:13.5px;color:var(--muted);margin:10px 0 5px}
+input[type=text],input[type=number],input[type=password],select,textarea{
+  width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+  padding:9px 11px;border-radius:9px;font:inherit;font-size:14px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+input[type=color]{width:52px;height:36px;padding:2px;background:var(--panel2);border:1px solid var(--line);border-radius:8px}
+button.btn{background:var(--acc);color:#fff;border:0;padding:10px 20px;border-radius:9px;
+  cursor:pointer;font:inherit;font-weight:600;font-size:14.5px}
+button.btn:hover{filter:brightness(1.1)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+button.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
+button.mini{padding:4px 9px;font-size:12.5px;font-weight:500;border-radius:7px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.row>*{flex:1;min-width:150px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.chip{background:var(--panel2);border:1px solid var(--line);padding:7px 12px;border-radius:20px;
+  cursor:pointer;font-size:13.5px;user-select:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.drop{border:2px dashed var(--line);border-radius:var(--radius);padding:30px;text-align:center;
+  color:var(--muted);cursor:pointer;transition:.15s}
+.drop.hover{border-color:var(--acc);background:rgba(79,140,255,.07);color:var(--txt)}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:12px;margin-top:14px}
+.f{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px;position:relative}
+.f img{width:100%;height:110px;object-fit:contain;background:#fff;border-radius:6px}
+.f .noimg{height:110px;display:flex;align-items:center;justify-content:center;font-size:32px;background:var(--panel);border-radius:6px}
+.f .n{font-size:12.5px;margin-top:7px;word-break:break-all;line-height:1.4}
+.f .m{font-size:11.5px;color:var(--muted);margin-top:3px}
+.f .x{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;border:0;
+  width:22px;height:22px;border-radius:50%;cursor:pointer;line-height:1;font-size:14px}
+.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:14px}
+.pg{background:var(--panel2);border:2px solid var(--line);border-radius:10px;padding:7px;text-align:center;
+  cursor:grab;position:relative}
+.pg.del{opacity:.32;border-color:var(--bad)}
+.pg img{width:100%;background:#fff;border-radius:5px;transition:transform .2s}
+.pg .lbl{font-size:12px;color:var(--muted);margin-top:6px}
+.pg .ops{display:flex;gap:4px;justify-content:center;margin-top:5px}
+.pg .ops button{background:var(--panel);border:1px solid var(--line);color:var(--txt);
+  border-radius:6px;cursor:pointer;padding:3px 7px;font-size:12px}
+.pg.drag{outline:2px dashed var(--acc)}
+.out{background:linear-gradient(135deg,rgba(46,204,143,.12),transparent);
+  border:1px solid var(--ok);border-radius:10px;padding:14px;margin-top:14px;display:flex;
+  gap:14px;align-items:center;flex-wrap:wrap}
+.out .name{font-weight:600}
+.out .note{color:var(--muted);font-size:13px;width:100%;line-height:1.6}
+.msg{padding:11px 14px;border-radius:9px;margin-top:12px;font-size:14px}
+.msg.e{background:rgba(255,95,109,.13);border:1px solid var(--bad)}
+.msg.i{background:rgba(79,140,255,.12);border:1px solid var(--acc)}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.6}
+.stage{position:relative;display:inline-block;width:fit-content;max-width:100%;
+  background:#fff;border-radius:8px;overflow:hidden}
+#ed-stage img{max-height:760px}
+.stage img{display:block;max-width:100%;max-height:520px;border:1px solid #ccc}
+.stage .mark{position:absolute;transform:translate(-50%,-50%);pointer-events:none;
+  outline:2px dashed var(--acc);background:rgba(79,140,255,.18)}
+.stage .mark img{width:100%;height:100%;object-fit:contain;max-height:none;border:0}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600}
+pre{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px;
+  max-height:340px;overflow:auto;font-size:13px;white-space:pre-wrap;line-height:1.7}
+pre.rtl{direction:rtl;text-align:right}
+.spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;animation:r .7s linear infinite;vertical-align:-2px}
+@keyframes r{to{transform:rotate(360deg)}}
+.hide{display:none !important}
+.tag{display:inline-block;background:var(--panel2);border:1px solid var(--line);
+  border-radius:6px;padding:2px 7px;font-size:11.5px;color:var(--muted)}
+.ar{background:rgba(124,92,255,.12);border:1px solid var(--acc2);border-radius:9px;
+  padding:10px 13px;margin-top:10px;font-size:12.8px;line-height:1.65;color:var(--muted)}
+.ar b{color:var(--txt)}
+
+.cp-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px}
+.cp-opt{border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 15px;cursor:pointer;background:var(--panel2);
+        transition:border-color .15s,transform .15s}
+.cp-opt:hover{border-color:var(--acc);transform:translateY(-2px)}
+.cp-opt.on{border-color:var(--acc);box-shadow:0 0 0 3px rgba(79,140,255,.18)}
+.cp-t{font-weight:700;font-size:15px}
+.cp-s{color:var(--acc);font-size:12.5px;font-weight:600;margin:3px 0 8px}
+.cp-d{color:var(--muted);font-size:13px;line-height:1.5}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:10px 0 6px;background:var(--panel2);border:1px solid var(--line)}
+.bar i{display:block;height:100%}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend b{color:var(--txt)} .legend s{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;text-decoration:none}
+.advice{margin-top:12px;padding:11px 13px;border-radius:9px;background:rgba(79,140,255,.10);border:1px solid rgba(79,140,255,.35);font-size:13.5px;line-height:1.55}
+</style>
+</head>
+<body>
+<header>
+  <h1>📄 PDF Studio</h1>
+  <span style="font-size:13px;opacity:.9">Local PDF toolkit · full Arabic support</span>
+  <span class="badge" id="ver">🔒 Nothing leaves this machine</span>
+</header>
+
+<div class="wrap">
+<nav id="nav">
+  <button data-t="files" class="on">📁 Files</button>
+  <div class="sep"></div>
+  <button data-t="merge">🔗 Merge</button>
+  <button data-t="organize">🗂️ Organize pages</button>
+  <button data-t="split">✂️ Split</button>
+  <div class="sep"></div>
+  <button data-t="extract">📤 Extract &amp; convert</button>
+  <button data-t="ocr">🔎 OCR</button>
+  <div class="sep"></div>
+  <button data-t="compress">🗜️ Compress</button>
+  <button data-t="protect">🔐 Security</button>
+  <button data-t="watermark">💧 Watermark</button>
+  <div class="sep"></div>
+  <button data-t="edit">✏️ Edit page</button>
+  <button data-t="stamp">✍️ Sign &amp; stamp</button>
+  <button data-t="form">📝 Fill forms</button>
+</nav>
+
+<main>
+<div id="update-bar" class="hide" style="background:linear-gradient(135deg,rgba(46,204,143,.15),transparent);
+     border:1px solid var(--ok);border-radius:10px;padding:13px 16px;margin-bottom:16px;
+     display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px"></div>
+
+<div id="shaping-warn" class="hide" style="background:rgba(255,95,109,.14);
+     border:1px solid var(--bad);border-radius:10px;padding:13px 16px;margin-bottom:16px;
+     font-size:13.5px;line-height:1.6"></div>
+
+<!-- ============ Files ============ -->
+<section id="p-files">
+  <h2>Files</h2>
+  <div class="sub">Upload PDFs, or images to use as signatures, stamps and logos. Everything is processed locally.</div>
+  <div class="card">
+    <div class="drop" id="drop">
+      <div style="font-size:34px">⬆️</div>
+      <div style="margin-top:8px">Drop files here, or click to browse</div>
+      <div class="hint">PDF · PNG · JPG — multiple files at once</div>
+    </div>
+    <input type="file" id="picker" multiple accept=".pdf,.png,.jpg,.jpeg,.webp" class="hide">
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center">
+      <b>Session library</b>
+      <button class="btn ghost mini" style="margin-left:auto" onclick="loadFiles()">Refresh</button>
+    </div>
+    <div class="files" id="lib"></div>
+  </div>
+</section>
+
+<!-- ============ Merge ============ -->
+<section id="p-merge" class="hide">
+  <h2>Merge PDFs</h2>
+  <div class="sub">Click files in the order you want them combined — the number shows their position.</div>
+  <div class="card">
+    <div id="merge-pick" class="files"></div>
+    <div style="margin-top:14px"><button class="btn" onclick="doMerge()">Merge files</button></div>
+    <div id="merge-out"></div>
+  </div>
+</section>
+
+<!-- ============ Organize ============ -->
+<section id="p-organize" class="hide">
+  <h2>Organize pages</h2>
+  <div class="sub">Delete, rotate and reorder pages by dragging them.</div>
+  <div class="card">
+    <label>PDF file</label>
+    <select id="org-file" onchange="loadPages()"></select>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn ghost mini" onclick="orgAll('rot',90)">Rotate all ↻</button>
+      <button class="btn ghost mini" onclick="orgAll('rot',-90)">Rotate all ↺</button>
+      <button class="btn ghost mini" onclick="orgAll('reset')">Reset changes</button>
+      <span class="tag" id="org-count"></span>
+    </div>
+    <div class="pages" id="org-pages"></div>
+    <div style="margin-top:14px"><button class="btn" onclick="applyOrganize()">Save as new file</button></div>
+    <div id="org-out"></div>
+  </div>
+</section>
+
+<!-- ============ Split ============ -->
+<section id="p-split" class="hide">
+  <h2>Split a PDF</h2>
+  <div class="sub">Break a file into single pages, fixed-size groups, or custom ranges.</div>
+  <div class="card">
+    <label>File</label><select id="sp-file"></select>
+    <label>Method</label>
+    <div class="chips" id="sp-mode">
+      <div class="chip on" data-v="each">One file per page</div>
+      <div class="chip" data-v="every">Every N pages</div>
+      <div class="chip" data-v="ranges">Custom ranges</div>
+      <div class="chip" data-v="extract">Extract range into one file</div>
+    </div>
+    <div id="sp-every" class="hide"><label>Pages per file</label>
+      <input type="number" id="sp-n" value="2" min="1"></div>
+    <div id="sp-ranges" class="hide"><label>Ranges</label>
+      <input type="text" id="sp-r" placeholder="1-3, 4-7, 10">
+      <div class="hint">Each range becomes its own file. Example: <code>1-3, 4-7, 10</code></div></div>
+    <div style="margin-top:14px"><button class="btn" onclick="doSplit()">Split</button></div>
+    <div id="sp-out"></div>
+  </div>
+</section>
+
+<!-- ============ Extract ============ -->
+<section id="p-extract" class="hide">
+  <h2>Extract &amp; convert</h2>
+  <div class="sub">Pull out text, tables and images, or convert the file to Word, Excel or PNG.</div>
+  <div class="card">
+    <label>File</label><select id="ex-file"></select>
+    <label>Output</label>
+    <div class="chips" id="ex-kind">
+      <div class="chip on" data-v="text">Text (TXT)</div>
+      <div class="chip" data-v="text_layout">Text, column layout</div>
+      <div class="chip" data-v="docx">Convert to Word</div>
+      <div class="chip" data-v="tables">Tables to Excel</div>
+      <div class="chip" data-v="images">Embedded images</div>
+      <div class="chip" data-v="pages_png">Pages as PNG</div>
+    </div>
+    <div class="row">
+      <div><label>Pages</label><input type="text" id="ex-pages" value="all" placeholder="all, or 1-5,8"></div>
+      <div id="ex-dpi-w" class="hide"><label>Resolution (DPI)</label><input type="number" id="ex-dpi" value="150"></div>
+    </div>
+
+    <div class="ar">
+      <b>Arabic handling.</b> Many Arabic PDFs store text as pre-rendered glyphs in
+      visual order, which comes out reversed and disconnected in normal extraction.
+      PDF Studio detects that and rebuilds the proper letters and reading order.
+      <div class="row" style="margin-top:9px">
+        <div><label style="margin-top:0">Letter order repair</label>
+          <select id="ex-arfix">
+            <option value="auto">Auto — repair only when needed (recommended)</option>
+            <option value="force">Always repair every Arabic line</option>
+            <option value="off">Off — raw extraction</option>
+          </select></div>
+        <div id="ex-docxmode-w" class="hide"><label style="margin-top:0">Word conversion mode</label>
+          <select id="ex-docxmode">
+            <option value="auto">Auto — text mode for Arabic, layout mode otherwise</option>
+            <option value="layout">Layout — keep formatting (poor with Arabic)</option>
+            <option value="text">Text — Arabic-safe, right-to-left paragraphs</option>
+          </select></div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px"><button class="btn" onclick="doExtract()">Run</button></div>
+    <div id="ex-out"></div>
+    <pre id="ex-prev" class="hide"></pre>
+  </div>
+</section>
+
+<!-- ============ OCR ============ -->
+<section id="p-ocr" class="hide">
+  <h2>OCR — make a scan searchable</h2>
+  <div class="sub">For scanned or photographed documents. Requires Tesseract installed on this machine.</div>
+  <div class="card">
+    <label>File</label><select id="ocr-file"></select>
+    <div class="row">
+      <div><label>Language</label>
+        <select id="ocr-lang">
+          <option value="ara+eng">Arabic + English</option>
+          <option value="ara">Arabic</option>
+          <option value="eng">English</option>
+        </select></div>
+      <div><label>Resolution (DPI)</label><input type="number" id="ocr-dpi" value="200"></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn" onclick="doOcr()">Run OCR</button></div>
+    <div class="hint">Installing Tesseract — Windows: the <code>tesseract-ocr-w64</code> installer, and tick the
+      Arabic language data. macOS: <code>brew install tesseract tesseract-lang</code>.
+      Linux: <code>sudo apt install tesseract-ocr tesseract-ocr-ara</code>.</div>
+    <div id="ocr-out"></div>
+  </div>
+</section>
+
+<!-- ============ Compress ============ -->
+<section id="p-compress" class="hide">
+  <h2>Compress</h2>
+  <div class="sub">Make a large PDF smaller. Start with <b>Analyze</b> to see what is taking up the space.</div>
+
+  <div class="card">
+    <label>File</label><select id="cp-file" onchange="cpReset()"></select>
+    <div style="margin-top:12px"><button class="btn ghost" onclick="cpAnalyze()">🔍 Analyze this file</button></div>
+    <div id="cp-an"></div>
+  </div>
+
+  <div class="card">
+    <b>Choose how far to go</b>
+    <div class="cp-opts" id="cp-level">
+      <div class="cp-opt on" data-v="lossless" onclick="cpPick(this)">
+        <div class="cp-t">Keep quality exactly</div>
+        <div class="cp-s">No pixel changes</div>
+        <div class="cp-d">Removes wasted space only — repeated images stored once, streams recompressed, unused objects dropped. Every page comes out identical. Typically 5–40% smaller; more if the file was saved wastefully.</div>
+      </div>
+      <div class="cp-opt" data-v="balanced" onclick="cpPick(this)">
+        <div class="cp-t">Smaller <span class="tag" style="margin-left:6px">recommended</span></div>
+        <div class="cp-s">Looks the same</div>
+        <div class="cp-d">Also reduces images that are stored at more resolution than any screen or printer can show (above 200 DPI, down to 150). Fine for reading, email and normal printing.</div>
+      </div>
+      <div class="cp-opt" data-v="maximum" onclick="cpPick(this)">
+        <div class="cp-t">Smallest</div>
+        <div class="cp-s">Trades quality for size</div>
+        <div class="cp-d">Reduces images to 96 DPI at lower JPEG quality. Best for sharing on screen or by email. Photos and scans become noticeably softer, and fine print may blur.</div>
+      </div>
+    </div>
+    <div style="margin-top:14px"><button class="btn" onclick="doCompress()">Compress</button></div>
+    <div id="cp-out"></div>
+  </div>
+</section>
+
+<!-- ============ Security ============ -->
+<section id="p-protect" class="hide">
+  <h2>Security</h2>
+  <div class="sub">Add a password and permissions, or remove protection from a file you have the password for.</div>
+  <div class="card">
+    <b>🔒 Add a password</b>
+    <label>File</label><select id="pr-file"></select>
+    <div class="row">
+      <div><label>Open password</label><input type="password" id="pr-u"></div>
+      <div><label>Owner password (optional)</label><input type="password" id="pr-o"></div>
+    </div>
+    <label>Allowed actions</label>
+    <div class="chips" id="pr-perm">
+      <div class="chip on" data-v="allow_print">Printing</div>
+      <div class="chip on" data-v="allow_copy">Copying text</div>
+      <div class="chip on" data-v="allow_annotate">Comments</div>
+      <div class="chip" data-v="allow_edit">Editing</div>
+    </div>
+    <div style="margin-top:14px"><button class="btn" onclick="doProtect()">Encrypt</button></div>
+    <div id="pr-out"></div>
+  </div>
+  <div class="card">
+    <b>🔓 Remove protection</b>
+    <label>File</label><select id="un-file"></select>
+    <label>Current password</label><input type="password" id="un-pw">
+    <div style="margin-top:14px"><button class="btn" onclick="doUnlock()">Unlock</button></div>
+    <div id="un-out"></div>
+  </div>
+</section>
+
+<!-- ============ Watermark ============ -->
+<section id="p-watermark" class="hide">
+  <h2>Watermark</h2>
+  <div class="sub">Text or a logo, with adjustable opacity and angle, on all pages or a selection.</div>
+  <div class="card">
+    <label>File</label><select id="wm-file"></select>
+    <label>Type</label>
+    <div class="chips" id="wm-mode">
+      <div class="chip on" data-v="text">Text</div>
+      <div class="chip" data-v="image">Image / logo</div>
+    </div>
+    <div id="wm-text-w">
+      <label>Text</label><input type="text" id="wm-text" value="CONFIDENTIAL">
+      <div class="hint">Arabic works here — letters are shaped and ordered correctly using the bundled font.
+        Try <span dir="rtl">سري للغاية</span>.</div>
+      <div class="row">
+        <div><label>Size</label><input type="number" id="wm-size" value="52"></div>
+        <div><label>Colour</label><input type="color" id="wm-color" value="#ff0000"></div>
+      </div>
+      <label><input type="checkbox" id="wm-tile"> Tile across the whole page</label>
+    </div>
+    <div id="wm-img-w" class="hide">
+      <label>Image</label><select id="wm-img"></select>
+      <label>Relative size: <span id="wm-scale-v">40%</span></label>
+      <input type="range" id="wm-scale" min="5" max="100" value="40">
+    </div>
+    <div class="row">
+      <div><label>Opacity: <span id="wm-op-v">18%</span></label>
+        <input type="range" id="wm-op" min="3" max="100" value="18"></div>
+      <div><label>Angle: <span id="wm-ang-v">45°</span></label>
+        <input type="range" id="wm-ang" min="-90" max="90" value="45"></div>
+    </div>
+    <div class="row">
+      <div><label>Pages</label><input type="text" id="wm-pages" value="all"></div>
+      <div><label>Layer</label>
+        <select id="wm-layer"><option value="0">Above the content</option><option value="1">Behind the content</option></select></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn" onclick="doWatermark()">Apply</button></div>
+    <div id="wm-out"></div>
+  </div>
+</section>
+
+<!-- ============ Edit page ============ -->
+<section id="p-edit" class="hide">
+  <h2>Edit page</h2>
+  <div class="sub">Drag a box over anything on the page, then erase it, retype it, or drop an image in its place.</div>
+
+  <div class="card">
+    <div class="row">
+      <div><label>File</label><select id="ed-file" onchange="edLoad(true)"></select></div>
+      <div><label>Page</label><input type="number" id="ed-page" value="1" min="1" onchange="edLoad(true)"></div>
+    </div>
+    <div class="hint">Drag on the page below to select a region. Everything inside it is
+      <b>removed from the file</b>, not covered over.</div>
+
+    <div style="margin-top:12px"><div class="stage" id="ed-stage"
+         style="cursor:crosshair;user-select:none"></div></div>
+
+    <div id="ed-list" style="margin-top:14px"></div>
+
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" onclick="doEdit()">Apply changes</button>
+      <button class="btn ghost" onclick="EDIT_REGIONS=[];edRender()">Clear selection</button>
+    </div>
+    <div id="ed-out"></div>
+  </div>
+
+  <div class="card">
+    <b>🔤 Find and replace text</b>
+    <div class="hint">The replacement is set in the same font, size and colour as the text it
+      replaces — read from the file itself, including the embedded font.</div>
+    <div class="row">
+      <div><label>Find</label><input type="text" id="rp-find" dir="auto"></div>
+      <div><label>Replace with</label><input type="text" id="rp-new" dir="auto"></div>
+    </div>
+    <div class="row">
+      <div><label>File</label><select id="rp-file"></select></div>
+      <div><label>Pages</label><input type="text" id="rp-pages" value="all"></div>
+    </div>
+    <label><input type="checkbox" id="rp-case"> Match upper/lower case exactly</label>
+    <div style="margin-top:14px"><button class="btn" onclick="doReplace()">Replace</button></div>
+    <div id="rp-out"></div>
+  </div>
+
+  <div class="card">
+    <b>🖼️ Images on this page</b>
+    <div class="hint">Pick a logo or stamp to remove, or to swap for another image.</div>
+    <div id="ed-images" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<!-- ============ Sign ============ -->
+<section id="p-stamp" class="hide">
+  <h2>Sign &amp; stamp</h2>
+  <div class="sub">Drop a signature or stamp image anywhere — click the preview to place it.</div>
+  <div class="card">
+    <div class="row">
+      <div><label>PDF file</label><select id="st-file" onchange="stLoad()"></select></div>
+      <div><label>Signature / stamp image</label><select id="st-img" onchange="stLoad()"></select></div>
+    </div>
+    <div class="row">
+      <div><label>Preview page</label><input type="number" id="st-page" value="1" min="1" onchange="stLoad()"></div>
+      <div><label>Apply to pages</label><input type="text" id="st-pages" placeholder="1, or all, or 2-5"></div>
+      <div><label>Width: <span id="st-w-v">22%</span></label>
+        <input type="range" id="st-w" min="3" max="90" value="22" oninput="stMark()"></div>
+    </div>
+    <div class="hint">Click anywhere on the preview to set the centre point.</div>
+    <div style="margin-top:12px"><div class="stage" id="st-stage"></div></div>
+    <div style="margin-top:14px"><button class="btn" onclick="doStamp()">Add signature</button></div>
+    <div id="st-out"></div>
+  </div>
+  <div class="card">
+    <b>✏️ Add free text</b>
+    <div class="hint">For a date, a name or a short note. Arabic is rendered correctly.</div>
+    <label>File</label><select id="tx-file"></select>
+    <label>Text</label><input type="text" id="tx-text" placeholder="Approved — 23/08/2026">
+    <div class="row">
+      <div><label>Pages</label><input type="text" id="tx-pages" value="1"></div>
+      <div><label>Size</label><input type="number" id="tx-size" value="14"></div>
+      <div><label>Colour</label><input type="color" id="tx-color" value="#000000"></div>
+    </div>
+    <div class="row">
+      <div><label>Horizontal: <span id="tx-x-v">50%</span></label><input type="range" id="tx-x" min="5" max="95" value="50"></div>
+      <div><label>Vertical from top: <span id="tx-y-v">90%</span></label><input type="range" id="tx-y" min="2" max="98" value="90"></div>
+    </div>
+    <div style="margin-top:14px"><button class="btn" onclick="doText()">Add text</button></div>
+    <div id="tx-out"></div>
+  </div>
+</section>
+
+<!-- ============ Forms ============ -->
+<section id="p-form" class="hide">
+  <h2>Fill PDF forms</h2>
+  <div class="sub">Reads the form fields automatically and fills them in.</div>
+  <div class="card">
+    <label>File</label><select id="fm-file" onchange="loadForm()"></select>
+    <div id="fm-fields"></div>
+    <div id="fm-actions" class="hide" style="margin-top:14px">
+      <label><input type="checkbox" id="fm-flat"> Flatten the fields (values become part of the page, no longer editable)</label>
+      <div class="ar">Arabic values are always flattened, whether or not the box above is ticked.
+        Interactive PDF form fields render with built-in fonts that contain no Arabic glyphs, so
+        an editable field would show empty boxes in most viewers. Flattening draws the text onto
+        the page with a real Arabic font instead.</div>
+      <button class="btn" style="margin-top:10px" onclick="doForm()">Save filled form</button>
+    </div>
+    <div id="fm-out"></div>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+let FILES = [];
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const AR = /[؀-ۿݐ-ݿﭐ-﻿]/;
+
+/* ---------- navigation ---------- */
+$$('#nav button').forEach(b => b.onclick = () => {
+  $$('#nav button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  $$('main > section').forEach(s => s.classList.add('hide'));
+  $('#p-' + b.dataset.t).classList.remove('hide');
+  if (b.dataset.t === 'merge') renderMergePick();
+  if (b.dataset.t === 'stamp') stLoad();
+  if (b.dataset.t === 'organize' && !PLAN.length) loadPages();
+  if (b.dataset.t === 'form') loadForm();
+  if (b.dataset.t === 'edit') edLoad(!EDIT_REGIONS.length);
+});
+
+/* ---------- chips ---------- */
+function chipSingle(id){
+  $$('#'+id+' .chip').forEach(c => c.onclick = () => {
+    $$('#'+id+' .chip').forEach(x => x.classList.remove('on'));
+    c.classList.add('on'); chipChanged(id, c.dataset.v);
+  });
+}
+function chipMulti(id){ $$('#'+id+' .chip').forEach(c => c.onclick = () => c.classList.toggle('on')); }
+function chipVal(id){ const c = $('#'+id+' .chip.on'); return c ? c.dataset.v : null; }
+function chipVals(id){ return $$('#'+id+' .chip.on').map(c => c.dataset.v); }
+['sp-mode','ex-kind','wm-mode'].forEach(chipSingle);
+chipMulti('pr-perm');
+
+function chipChanged(id, v){
+  if (id === 'sp-mode'){
+    $('#sp-every').classList.toggle('hide', v !== 'every');
+    $('#sp-ranges').classList.toggle('hide', v !== 'ranges' && v !== 'extract');
+  }
+  if (id === 'ex-kind'){
+    $('#ex-dpi-w').classList.toggle('hide', v !== 'pages_png');
+    $('#ex-docxmode-w').classList.toggle('hide', v !== 'docx');
+  }
+  if (id === 'wm-mode'){
+    $('#wm-text-w').classList.toggle('hide', v !== 'text');
+    $('#wm-img-w').classList.toggle('hide', v !== 'image');
+  }
+}
+
+/* ---------- sliders ---------- */
+const bind = (id, out, fmt) => { const e = $('#'+id);
+  const up = () => $('#'+out).textContent = fmt(e.value); e.oninput = up; up(); };
+bind('wm-op','wm-op-v', v => v + '%');
+bind('wm-ang','wm-ang-v', v => v + '°');
+bind('wm-scale','wm-scale-v', v => v + '%');
+bind('st-w','st-w-v', v => v + '%');
+bind('tx-x','tx-x-v', v => v + '%');
+bind('tx-y','tx-y-v', v => v + '%');
+
+/* ---------- upload ---------- */
+const drop = $('#drop'), picker = $('#picker');
+const DROP_HTML = '<div style="font-size:34px">⬆️</div><div style="margin-top:8px">Drop files here, or click to browse</div><div class="hint">PDF · PNG · JPG — multiple files at once</div>';
+drop.onclick = () => picker.click();
+picker.onchange = () => { if (picker.files.length) upload(picker.files); picker.value=''; };
+['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => {
+  e.preventDefault(); drop.classList.add('hover'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => {
+  e.preventDefault(); drop.classList.remove('hover'); }));
+drop.addEventListener('drop', e => { if (e.dataTransfer.files.length) upload(e.dataTransfer.files); });
+
+async function upload(files){
+  const fd = new FormData();
+  [...files].forEach(f => fd.append('files', f));
+  drop.innerHTML = '<div style="font-size:28px">⏳</div><div style="margin-top:8px">Uploading…</div>';
+  try{
+    const j = await (await fetch('/api/files', {method:'POST', body:fd})).json();
+    if (!j.ok) alert(j.error);
+  } catch(e){ alert('Upload failed: ' + e); }
+  drop.innerHTML = DROP_HTML;
+  loadFiles();
+}
+
+async function loadFiles(){
+  const j = await (await fetch('/api/files')).json();
+  FILES = j.files;
+  renderLib(); fillSelects(); renderMergePick();
+}
+
+function fileCard(f, extra=''){
+  const thumb = (f.kind==='pdf' && f.unlocked && f.pages) || f.kind==='image'
+    ? `<img src="/api/thumb/${f.id}/0?w=190&t=${f.created}" loading="lazy">`
+    : `<div class="noimg">${f.kind==='pdf'?'🔒':(f.kind==='zip'?'🗜️':'📄')}</div>`;
+  const meta = f.kind==='pdf'
+    ? `${f.pages} pages · ${f.size_h}${f.encrypted?' · 🔒 protected':''}${f.has_form?' · 📝 form':''}`
+    : `${f.kind.toUpperCase()} · ${f.size_h}`;
+  const rtl = AR.test(f.name) ? ' dir="rtl"' : '';
+  return `<div class="f" data-id="${f.id}">
+    <button class="x" onclick="event.stopPropagation();delFile('${f.id}')">×</button>
+    ${thumb}<div class="n"${rtl}>${f.name}</div><div class="m">${meta}</div>${extra}</div>`;
+}
+
+function renderLib(){
+  if (!FILES.length){ $('#lib').innerHTML = '<div class="hint">No files yet.</div>'; return; }
+  $('#lib').innerHTML = FILES.map(f => fileCard(f,
+    `<div style="margin-top:7px"><a href="/api/download/${f.id}">
+      <button class="btn mini" style="width:100%">Download</button></a></div>`)).join('');
+}
+
+async function delFile(id){ await fetch('/api/files/' + id, {method:'DELETE'}); loadFiles(); }
+
+function fillSelects(){
+  const pdfs = FILES.filter(f => f.kind === 'pdf');
+  const imgs = FILES.filter(f => f.kind === 'image');
+  const opt = list => list.map(f =>
+    `<option value="${f.id}">${f.name}${f.kind==='pdf'?` (${f.pages||'?'} p)`:''}</option>`).join('');
+  ['#org-file','#sp-file','#ex-file','#cp-file','#pr-file','#wm-file','#st-file','#tx-file',
+   '#ocr-file','#ed-file','#rp-file'].forEach(s => keepSel(s, opt(pdfs)));
+  keepSel('#un-file', pdfs.map(f => `<option value="${f.id}">${f.name}</option>`).join(''));
+  keepSel('#fm-file', opt(pdfs.filter(f => f.has_form)) ||
+    '<option value="">— no file with fillable fields —</option>');
+  keepSel('#wm-img', opt(imgs)); keepSel('#st-img', opt(imgs));
+}
+function keepSel(sel, html){
+  const e = $(sel); if(!e) return;
+  const cur = e.value; e.innerHTML = html;
+  if (cur && [...e.options].some(o => o.value === cur)) e.value = cur;
+}
+
+/* ---------- results ---------- */
+function showOut(target, j){
+  const box = $(target);
+  if (!j.ok){ box.innerHTML = `<div class="msg e">⚠️ ${j.error}</div>`; return; }
+  const f = j.file;
+  box.innerHTML = `<div class="out">
+    <span class="name">✅ ${f.name}</span><span class="tag">${f.size_h}</span>
+    <a href="/api/download/${f.id}"><button class="btn">⬇️ Download</button></a>
+    <button class="btn ghost" onclick="useAsInput('${f.id}')">Use as input</button>
+    ${j.saved_pct !== undefined ? `<span class="tag" style="border-color:var(--ok);color:var(--ok)">−${j.saved_pct}%</span>` : ''}
+    ${j.note ? `<div class="note">${j.note}</div>` : ''}</div>`;
+  loadFiles();
+}
+function useAsInput(id){
+  loadFiles().then(() => setTimeout(() => {
+    $$('select').forEach(s => { if ([...s.options].some(o=>o.value===id)) s.value = id; });
+    alert('The result is now selected across all tools.');
+  }, 300));
+}
+async function post(url, body, target, btn){
+  if (btn){ btn.disabled = true; btn.dataset.o = btn.innerHTML; btn.innerHTML = '<span class="spin"></span> Working…'; }
+  try{
+    const j = await (await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'},
+                                      body:JSON.stringify(body)})).json();
+    showOut(target, j); return j;
+  } catch(e){
+    $(target).innerHTML = `<div class="msg e">⚠️ Error: ${e}</div>`; return {ok:false};
+  } finally { if (btn){ btn.disabled = false; btn.innerHTML = btn.dataset.o; } }
+}
+
+/* ---------- merge ---------- */
+let mergeSel = [];
+function renderMergePick(){
+  const pdfs = FILES.filter(f => f.kind === 'pdf');
+  mergeSel = mergeSel.filter(id => pdfs.some(f => f.id === id));
+  $('#merge-pick').innerHTML = pdfs.length ? pdfs.map(f => {
+    const i = mergeSel.indexOf(f.id);
+    return fileCard(f, i >= 0
+      ? `<div style="margin-top:7px"><button class="btn mini" style="width:100%">✓ position ${i+1}</button></div>`
+      : `<div style="margin-top:7px"><button class="btn ghost mini" style="width:100%">Select</button></div>`)
+      .replace('<div class="f"', '<div class="f" style="cursor:pointer" onclick="toggleMerge(\''+f.id+'\')"');
+  }).join('') : '<div class="hint">Upload some PDFs from the Files tab first.</div>';
+}
+function toggleMerge(id){
+  const i = mergeSel.indexOf(id);
+  if (i >= 0) mergeSel.splice(i,1); else mergeSel.push(id);
+  renderMergePick();
+}
+function doMerge(){
+  if (mergeSel.length < 2) return alert('Pick at least two files.');
+  post('/api/merge', {ids: mergeSel}, '#merge-out', event.target);
+}
+
+/* ---------- organize ---------- */
+let PLAN = [];
+async function loadPages(){
+  const id = $('#org-file').value;
+  const f = FILES.find(x => x.id === id);
+  if (!f){ $('#org-pages').innerHTML=''; return; }
+  PLAN = Array.from({length: f.pages}, (_, i) => ({src:i, rotate:0, del:false}));
+  renderPages();
+}
+function renderPages(){
+  const id = $('#org-file').value;
+  $('#org-count').textContent = `${PLAN.filter(p=>!p.del).length} of ${PLAN.length} pages will be saved`;
+  $('#org-pages').innerHTML = PLAN.map((p, i) => `
+    <div class="pg ${p.del?'del':''}" draggable="true" data-i="${i}">
+      <img src="/api/thumb/${id}/${p.src}?w=150" style="transform:rotate(${p.rotate}deg)">
+      <div class="lbl">page ${p.src+1}${p.rotate?` · ${p.rotate}°`:''}</div>
+      <div class="ops">
+        <button onclick="rot(${i},-90)" title="Rotate left">↺</button>
+        <button onclick="rot(${i},90)" title="Rotate right">↻</button>
+        <button onclick="tog(${i})" title="Delete / restore">${p.del?'↩':'🗑'}</button>
+      </div></div>`).join('');
+  wireDrag();
+}
+function rot(i, d){ PLAN[i].rotate = ((PLAN[i].rotate + d) % 360 + 360) % 360; renderPages(); }
+function tog(i){ PLAN[i].del = !PLAN[i].del; renderPages(); }
+function orgAll(op, v){
+  if (op === 'reset') PLAN.forEach(p => { p.rotate = 0; p.del = false; });
+  if (op === 'rot') PLAN.forEach(p => p.rotate = ((p.rotate + v) % 360 + 360) % 360);
+  renderPages();
+}
+let dragI = null;
+function wireDrag(){
+  $$('#org-pages .pg').forEach(el => {
+    el.ondragstart = () => { dragI = +el.dataset.i; el.classList.add('drag'); };
+    el.ondragend = () => el.classList.remove('drag');
+    el.ondragover = e => e.preventDefault();
+    el.ondrop = e => { e.preventDefault();
+      const to = +el.dataset.i;
+      if (dragI === null || dragI === to) return;
+      const [m] = PLAN.splice(dragI, 1); PLAN.splice(to, 0, m); dragI = null; renderPages(); };
+  });
+}
+function applyOrganize(){
+  const plan = PLAN.filter(p => !p.del).map(p => ({src:p.src, rotate:p.rotate}));
+  if (!plan.length) return alert('A PDF needs at least one page.');
+  post('/api/organize', {id: $('#org-file').value, plan}, '#org-out', event.target);
+}
+
+/* ---------- the rest ---------- */
+function doSplit(){
+  post('/api/split', {id:$('#sp-file').value, mode:chipVal('sp-mode'),
+    every:+$('#sp-n').value, ranges:$('#sp-r').value}, '#sp-out', event.target);
+}
+async function doExtract(){
+  const j = await post('/api/extract', {id:$('#ex-file').value, kind:chipVal('ex-kind'),
+    pages:$('#ex-pages').value, dpi:+$('#ex-dpi').value,
+    arabic_fix:$('#ex-arfix').value, docx_mode:$('#ex-docxmode').value}, '#ex-out', event.target);
+  const p = $('#ex-prev');
+  if (j && j.text_preview){
+    p.textContent = j.text_preview;
+    p.classList.toggle('rtl', AR.test(j.text_preview));
+    p.classList.remove('hide');
+  } else p.classList.add('hide');
+}
+function doOcr(){
+  post('/api/ocr', {id:$('#ocr-file').value, lang:$('#ocr-lang').value, dpi:+$('#ocr-dpi').value},
+    '#ocr-out', event.target);
+}
+function cpPick(el){
+  $$('#cp-level .cp-opt').forEach(o => o.classList.toggle('on', o === el));
+}
+function cpLevel(){ const o = $('#cp-level .cp-opt.on'); return o ? o.dataset.v : 'balanced'; }
+function cpReset(){ $('#cp-an').innerHTML = ''; $('#cp-out').innerHTML = ''; }
+async function cpAnalyze(){
+  const id = $('#cp-file').value; if (!id) return;
+  const box = $('#cp-an'); box.innerHTML = '<div class="hint" style="margin-top:12px"><span class="spin"></span> Reading the file…</div>';
+  try{
+    const j = await (await fetch('/api/analyze', {method:'POST', headers:{'Content-Type':'application/json'},
+                                                  body:JSON.stringify({id})})).json();
+    if (!j.ok){ box.innerHTML = `<div class="msg e">⚠️ ${j.error}</div>`; return; }
+    const P = j.parts, pc = k => Math.max(P[k].pct, P[k].bytes ? 1.5 : 0);
+    box.innerHTML = `
+      <div style="margin-top:14px"><b>${j.total_h}</b> <span class="hint" style="display:inline">· ${j.pages} page${j.pages>1?'s':''}</span></div>
+      <div class="bar">
+        <i style="width:${pc('images')}%;background:#ff8a4f"></i>
+        <i style="width:${pc('fonts')}%;background:#7c5cff"></i>
+        <i style="width:${pc('other')}%;background:#4f8cff"></i>
+      </div>
+      <div class="legend">
+        <span><s style="background:#ff8a4f"></s>Images <b>${P.images.h}</b> (${P.images.pct}%)</span>
+        <span><s style="background:#7c5cff"></s>Fonts <b>${P.fonts.h}</b> (${P.fonts.pct}%)</span>
+        <span><s style="background:#4f8cff"></s>Text &amp; layout <b>${P.other.h}</b> (${P.other.pct}%)</span>
+      </div>
+      ${j.image_count ? `<div class="hint" style="margin-top:8px">${j.image_count} image${j.image_count>1?'s':''},
+        ${j.oversized} stored above 200 DPI${j.oversized ? ` (${j.oversized_h})` : ''}.</div>` : ''}
+      <div class="advice">💡 ${j.advice}</div>`;
+  } catch(e){ box.innerHTML = `<div class="msg e">⚠️ Error: ${e}</div>`; }
+}
+function doCompress(){
+  post('/api/compress', {id:$('#cp-file').value, level:cpLevel()}, '#cp-out', event.target);
+}
+function doProtect(){
+  const perms = chipVals('pr-perm');
+  const body = {id:$('#pr-file').value, user_pw:$('#pr-u').value, owner_pw:$('#pr-o').value};
+  ['allow_print','allow_copy','allow_annotate','allow_edit'].forEach(k => body[k] = perms.includes(k));
+  post('/api/protect', body, '#pr-out', event.target);
+}
+function doUnlock(){
+  post('/api/unlock', {id:$('#un-file').value, pw:$('#un-pw').value}, '#un-out', event.target);
+}
+function doWatermark(){
+  post('/api/watermark', {
+    id:$('#wm-file').value, mode:chipVal('wm-mode'), text:$('#wm-text').value,
+    image_id:$('#wm-img').value, size:+$('#wm-size').value, color:$('#wm-color').value,
+    tile:$('#wm-tile').checked, opacity:+$('#wm-op').value/100, angle:+$('#wm-ang').value,
+    scale:+$('#wm-scale').value/100, pages:$('#wm-pages').value,
+    behind:$('#wm-layer').value === '1'
+  }, '#wm-out', event.target);
+}
+function doText(){
+  post('/api/text', {id:$('#tx-file').value, text:$('#tx-text').value, pages:$('#tx-pages').value,
+    size:+$('#tx-size').value, color:$('#tx-color').value,
+    x:+$('#tx-x').value/100, y:1 - $('#tx-y').value/100}, '#tx-out', event.target);
+}
+
+/* ---------- signature placement ---------- */
+let stPos = {x:0.7, y:0.85}, stRatio = 0.45;
+function stLoad(){
+  const id = $('#st-file').value, pg = Math.max(1, +$('#st-page').value) - 1;
+  const st = $('#st-stage');
+  if (!id){ st.innerHTML = '<div class="hint" style="padding:20px">Select a PDF file.</div>'; return; }
+  st.innerHTML = `<img id="st-img-el" src="/api/thumb/${id}/${pg}?w=520"><div class="mark" id="st-mark"></div>`;
+  $('#st-img-el').onload = stMark;
+  st.onclick = e => {
+    const im = $('#st-img-el'); if (!im) return;
+    const r = im.getBoundingClientRect();
+    stPos.x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    stPos.y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    stMark();
+  };
+}
+function stMark(){
+  const im = $('#st-img-el'), mk = $('#st-mark'); if (!im || !mk) return;
+  const w = +$('#st-w').value / 100 * im.clientWidth;
+  const imgId = $('#st-img').value;
+  mk.style.width = w + 'px';
+  mk.style.height = (w * stRatio) + 'px';
+  mk.style.left = (stPos.x * im.clientWidth) + 'px';
+  mk.style.top = (stPos.y * im.clientHeight) + 'px';
+  if (imgId && mk.dataset.img !== imgId){
+    mk.dataset.img = imgId;
+    mk.innerHTML = `<img src="/api/preview/${imgId}">`;
+    const probe = new Image();
+    probe.onload = () => { stRatio = probe.height / probe.width; stMark(); };
+    probe.src = '/api/preview/' + imgId;
+  } else if (!imgId){ mk.innerHTML = ''; mk.dataset.img = ''; }
+}
+function doStamp(){
+  if (!$('#st-img').value) return alert('Upload a signature image from the Files tab first.');
+  post('/api/stamp', {id:$('#st-file').value, image_id:$('#st-img').value,
+    page:+$('#st-page').value - 1, pages:$('#st-pages').value || String(+$('#st-page').value),
+    x:stPos.x, y:1 - stPos.y, width:+$('#st-w').value/100}, '#st-out', event.target);
+}
+
+/* ---------- forms ---------- */
+async function loadForm(){
+  const id = $('#fm-file').value;
+  const box = $('#fm-fields');
+  if (!id){ box.innerHTML = '<div class="hint">No file with fillable fields. Upload a fillable PDF form.</div>';
+    $('#fm-actions').classList.add('hide'); return; }
+  box.innerHTML = '<div class="hint">Reading fields…</div>';
+  const j = await (await fetch('/api/form/' + id)).json();
+  if (!j.ok){ box.innerHTML = `<div class="msg e">${j.error}</div>`; return; }
+  if (!j.count){ box.innerHTML = '<div class="msg i">This file has no fillable fields.</div>';
+    $('#fm-actions').classList.add('hide'); return; }
+  box.innerHTML = `<div class="hint">${j.count} field(s) found</div>
+    <table><tr><th>Field</th><th>Type</th><th>Value</th></tr>` +
+    j.fields.map(f => `<tr><td>${f.name}</td><td><span class="tag">${f.type}</span></td>
+      <td><input type="text" data-fname="${encodeURIComponent(f.name)}"
+        value="${(f.value||'').replace(/"/g,'&quot;')}" oninput="dirCheck(this)"></td></tr>`).join('') +
+    '</table>';
+  $('#fm-actions').classList.remove('hide');
+}
+function dirCheck(i){ i.dir = AR.test(i.value) ? 'rtl' : 'ltr'; }
+function doForm(){
+  const values = {};
+  $$('#fm-fields input[data-fname]').forEach(i => {
+    if (i.value !== '') values[decodeURIComponent(i.dataset.fname)] = i.value;
+  });
+  if (!Object.keys(values).length) return alert('Enter at least one value.');
+  post('/api/form/fill', {id:$('#fm-file').value, values, flatten:$('#fm-flat').checked},
+    '#fm-out', event.target);
+}
+
+/* ---------- Edit page ---------- */
+let EDIT_REGIONS = [], edDrag = null;
+
+function edImg(){ return $('#ed-img'); }
+
+function edLoad(reset){
+  const id = $('#ed-file').value, pg = Math.max(1, +$('#ed-page').value) - 1;
+  const st = $('#ed-stage');
+  if (reset) EDIT_REGIONS = [];
+  if (!id){ st.innerHTML = '<div class="hint" style="padding:20px">Select a PDF file.</div>';
+    $('#ed-images').innerHTML = ''; return; }
+  st.innerHTML = `<img id="ed-img" src="/api/thumb/${id}/${pg}?w=760" draggable="false">`;
+  edImg().onload = edRender;
+  wireDraw(st);
+  loadPageImages(id, pg);
+}
+
+function wireDraw(st){
+  st.onmousedown = e => {
+    const im = edImg(); if (!im) return;
+    const r = im.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right) return;
+    edDrag = {x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height,
+              x2: 0, y2: 0};
+    e.preventDefault();
+  };
+  st.onmousemove = e => {
+    if (!edDrag) return;
+    const r = edImg().getBoundingClientRect();
+    edDrag.x2 = (e.clientX - r.left) / r.width;
+    edDrag.y2 = (e.clientY - r.top) / r.height;
+    edRender(edDrag);
+  };
+  st.onmouseup = () => {
+    if (!edDrag) return;
+    const d = edDrag; edDrag = null;
+    const box = {x0: Math.min(d.x, d.x2), y0: Math.min(d.y, d.y2),
+                 x1: Math.max(d.x, d.x2), y1: Math.max(d.y, d.y2)};
+    if ((box.x1 - box.x0) < 0.004 || (box.y1 - box.y0) < 0.004){ edRender(); return; }
+    EDIT_REGIONS.push({rect: box, action: 'erase', text: '', auto_font: true, info: null});
+    edRender();
+    inspectRegion(EDIT_REGIONS.length - 1);
+  };
+}
+
+async function inspectRegion(i){
+  const reg = EDIT_REGIONS[i]; if (!reg) return;
+  try {
+    const j = await (await fetch('/api/inspect', {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({id:$('#ed-file').value, page:+$('#ed-page').value - 1,
+                            rect: reg.rect})})).json();
+    reg.info = j.found ? j : {found:false};
+    edRender();
+  } catch (e) { /* the region still works without the detected font */ }
+}
+
+function edRender(live){
+  const im = edImg(); if (!im) return;
+  const st = $('#ed-stage');
+  [...st.querySelectorAll('.sel')].forEach(n => n.remove());
+  const W = im.clientWidth, H = im.clientHeight;
+  const draw = (b, label, colour) => {
+    const n = document.createElement('div');
+    n.className = 'sel';
+    n.style.cssText = `position:absolute;left:${b.x0*W}px;top:${b.y0*H}px;` +
+      `width:${(b.x1-b.x0)*W}px;height:${(b.y1-b.y0)*H}px;` +
+      `outline:2px solid ${colour};background:${colour}22;pointer-events:none;` +
+      `font-size:11px;color:${colour};font-weight:600`;
+    if (label) n.innerHTML = `<span style="position:absolute;top:-16px;left:0;white-space:nowrap">${label}</span>`;
+    st.appendChild(n);
+  };
+  EDIT_REGIONS.forEach((r, i) => draw(r.rect, `${i+1}`, '#4f8cff'));
+  if (live) draw({x0:Math.min(live.x,live.x2), y0:Math.min(live.y,live.y2),
+                  x1:Math.max(live.x,live.x2), y1:Math.max(live.y,live.y2)}, '', '#7c5cff');
+
+  const imgs = FILES.filter(f => f.kind === 'image');
+  $('#ed-list').innerHTML = EDIT_REGIONS.length === 0
+    ? '<div class="hint">No regions selected yet.</div>'
+    : EDIT_REGIONS.map((r, i) => {
+      const info = r.info;
+      const detected = info && info.found
+        ? `<span class="tag">${info.font} · ${info.size}pt · ${info.color}${info.bold?' · bold':''}${info.italic?' · italic':''}</span>
+           <span class="tag" style="border-color:var(--ok);color:var(--ok)">${info.used}</span>`
+        : (info ? '<span class="tag">no text detected here</span>' : '<span class="tag">reading…</span>');
+      return `<div class="card" style="margin:0 0 10px;padding:12px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <b>Region ${i+1}</b>
+          <select onchange="EDIT_REGIONS[${i}].action=this.value;edRender()" style="width:auto">
+            <option value="erase" ${r.action==='erase'?'selected':''}>Erase it</option>
+            <option value="text" ${r.action==='text'?'selected':''}>Erase and type new text</option>
+            <option value="image" ${r.action==='image'?'selected':''}>Erase and place an image</option>
+          </select>
+          <button class="btn ghost mini" style="margin-left:auto"
+                  onclick="EDIT_REGIONS.splice(${i},1);edRender()">Remove</button>
+        </div>
+        ${r.action==='text' ? `
+          <div style="margin-top:9px">${detected}</div>
+          <input type="text" dir="auto" placeholder="New text" value="${(r.text||'').replace(/"/g,'&quot;')}"
+                 oninput="EDIT_REGIONS[${i}].text=this.value" style="margin-top:8px">
+          <label style="margin-top:8px"><input type="checkbox" ${r.auto_font?'checked':''}
+                 onchange="EDIT_REGIONS[${i}].auto_font=this.checked;edRender()">
+                 Match the original font, size and colour</label>
+          ${r.auto_font ? '' : `<div class="row">
+            <div><label>Size</label><input type="number" value="${r.size||12}"
+                 oninput="EDIT_REGIONS[${i}].size=+this.value"></div>
+            <div><label>Colour</label><input type="color" value="${r.color||'#000000'}"
+                 oninput="EDIT_REGIONS[${i}].color=this.value"></div></div>`}
+        ` : ''}
+        ${r.action==='image' ? `
+          <label style="margin-top:8px">Image</label>
+          <select onchange="EDIT_REGIONS[${i}].image_id=this.value">
+            ${imgs.length ? imgs.map(f => `<option value="${f.id}" ${r.image_id===f.id?'selected':''}>${f.name}</option>`).join('')
+                          : '<option value="">— upload an image from the Files tab —</option>'}
+          </select>` : ''}
+      </div>`;
+    }).join('');
+}
+
+async function loadPageImages(id, pg){
+  const box = $('#ed-images');
+  box.innerHTML = '<div class="hint">Looking…</div>';
+  try {
+    const j = await (await fetch(`/api/page_images/${id}/${pg}`)).json();
+    if (!j.ok || !j.count){ box.innerHTML = '<div class="hint">No images on this page.</div>'; return; }
+    box.innerHTML = j.images.map((im, i) => `
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
+        <span class="tag">image ${i+1}</span>
+        <span class="hint" style="margin:0">${im.w}×${im.h} pt</span>
+        <button class="btn ghost mini" style="margin-left:auto"
+          onclick='addImageRegion(${JSON.stringify(im.rect)}, "erase")'>Select to erase</button>
+        <button class="btn mini"
+          onclick='addImageRegion(${JSON.stringify(im.rect)}, "image")'>Select to replace</button>
+      </div>`).join('');
+  } catch (e) { box.innerHTML = '<div class="hint">Could not read the images.</div>'; }
+}
+
+function addImageRegion(rect, action){
+  EDIT_REGIONS.push({rect, action, text:'', auto_font:true, info:{found:false}});
+  edRender();
+}
+
+function doEdit(){
+  if (!EDIT_REGIONS.length) return alert('Drag a box over something on the page first.');
+  const page = +$('#ed-page').value - 1;
+  const ops = EDIT_REGIONS.map(r => ({
+    page, rect: r.rect, action: r.action, text: r.text,
+    auto_font: r.auto_font, size: r.size, color: r.color, image_id: r.image_id,
+  }));
+  for (const o of ops){
+    if (o.action === 'text' && !(o.text || '').trim())
+      return alert('One of the regions is set to "type new text" but has no text.');
+    if (o.action === 'image' && !o.image_id)
+      return alert('Upload an image from the Files tab first, then pick it for that region.');
+  }
+  post('/api/edit', {id: $('#ed-file').value, ops}, '#ed-out', event.target)
+    .then(() => { EDIT_REGIONS = []; edRender(); });
+}
+
+function doReplace(){
+  post('/api/replace', {id:$('#rp-file').value, find:$('#rp-find').value,
+    replace:$('#rp-new').value, pages:$('#rp-pages').value,
+    match_case:$('#rp-case').checked}, '#rp-out', event.target);
+}
+
+/* ---------- Updates ---------- */
+async function checkUpdate(manual){
+  const bar = $('#update-bar');
+  try {
+    const j = await (await fetch('/api/update/check')).json();
+    if (!j.ok){
+      if (manual) alert('Could not check for updates: ' + j.error);
+      return;
+    }
+    if (!j.available){
+      if (manual) alert(`You are on the latest version (${j.current}).`);
+      return;
+    }
+    bar.innerHTML = `<b>Version ${j.latest} is available</b>
+      <span class="tag">you have ${j.current}</span>
+      ${j.notes ? `<span style="color:var(--muted)">${j.notes}</span>` : ''}
+      <button class="btn" style="margin-left:auto" onclick="applyUpdate(this)">Update now</button>
+      <button class="btn ghost" onclick="$('#update-bar').classList.add('hide')">Later</button>`;
+    bar.classList.remove('hide');
+  } catch (e) {
+    if (manual) alert('Could not check for updates.');
+  }
+}
+
+async function applyUpdate(btn){
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Updating…';
+  try {
+    const j = await (await fetch('/api/update/apply', {method:'POST'})).json();
+    const bar = $('#update-bar');
+    bar.innerHTML = j.ok
+      ? `<b>✅ ${j.note}</b>`
+      : `<b style="color:var(--bad)">Update failed</b> <span>${j.error}</span>`;
+    if (!j.ok) bar.style.borderColor = 'var(--bad)';
+  } catch (e) {
+    alert('Update failed: ' + e);
+    btn.disabled = false; btn.textContent = 'Update now';
+  }
+}
+
+setTimeout(() => checkUpdate(false), 1500);
+
+/* Arabic shaping has to be checked at runtime: a security policy blocking one
+   library is enough to break it, and the damage would otherwise be silent. */
+(async () => {
+  try {
+    const h = await (await fetch('/api/health')).json();
+    if (h.ok && h.arabic_shaping === false){
+      const el = $('#shaping-warn');
+      el.innerHTML = `<b>⚠ Arabic letter shaping is not working on this machine.</b><br>
+        Arabic written onto a PDF — watermarks, signatures, form values — will come out
+        as disconnected letters in reverse order. Reading Arabic <em>out of</em> a PDF is
+        unaffected.<br><span class="tag" style="margin-top:6px;display:inline-block">
+        ${h.arabic_shaping_error || 'reason unknown'}</span>`;
+      el.classList.remove('hide');
+    }
+  } catch (e) { /* the banner is a nicety; never block the app on it */ }
+})();
+
+loadFiles();
+</script>
+</body>
+</html>

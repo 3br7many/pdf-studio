@@ -1,0 +1,5 @@
+# Optional. Adds layout-preserving PDF -> Word conversion.
+# It pulls in OpenCV, which does not always have a wheel ready for brand-new
+# Python releases. If it fails to install, PDF Studio still converts to Word
+# in text mode — and text mode is what Arabic documents use anyway.
+pdf2docx>=0.5.8
