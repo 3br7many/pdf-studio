@@ -189,15 +189,16 @@ def open_window(port):
 # Tray icon
 # ---------------------------------------------------------------------------
 def tray_image():
-    from PIL import Image, ImageDraw
-    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img)
-    d.rounded_rectangle([6, 4, 52, 60], radius=7, fill=(255, 255, 255, 255),
-                        outline=(70, 110, 220, 255), width=3)
-    d.polygon([(52, 4), (52, 20), (36, 4)], fill=(220, 228, 245, 255))
-    d.rectangle([16, 30, 44, 36], fill=(220, 60, 70, 255))
-    d.rectangle([16, 42, 38, 48], fill=(70, 110, 220, 255))
-    return img
+    try:
+        import brand
+        return brand.icon_image(64)
+    except Exception:
+        from PIL import Image, ImageDraw
+        img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle([6, 4, 52, 60], radius=7, fill=(255, 255, 255, 255),
+                            outline=(70, 110, 220, 255), width=3)
+        return img
 
 
 def run_tray(port, on_quit):

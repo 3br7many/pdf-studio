@@ -132,20 +132,14 @@ def step(n, text):
 
 
 def make_icon(py):
-    """Draw the application icon rather than shipping a binary blob."""
+    """Write the application icon from the PDF Studio logo (brand.py)."""
     script = os.path.join(BUILD, "_icon.py")
     with open(script, "w", encoding="utf-8") as fh:
         fh.write(f'''
-from PIL import Image, ImageDraw
-sizes = [16, 24, 32, 48, 64, 128, 256]
-base = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
-d = ImageDraw.Draw(base)
-d.rounded_rectangle([28, 16, 214, 240], radius=26, fill=(255, 255, 255, 255),
-                    outline=(79, 140, 255, 255), width=11)
-d.polygon([(214, 16), (214, 76), (152, 16)], fill=(214, 226, 248, 255))
-d.rectangle([64, 120, 178, 144], fill=(214, 60, 70, 255))
-d.rectangle([64, 166, 150, 190], fill=(79, 140, 255, 255))
-base.save(r"{ICON}", sizes=[(s, s) for s in sizes])
+import sys
+sys.path.insert(0, r"{HERE}")
+import brand
+brand.write_ico(r"{ICON}")
 print("icon written")
 ''')
     must([py, script], "drawing the icon")
@@ -295,6 +289,7 @@ def main():
         "--add-data", f"{os.path.join(HERE, 'templates')}{sep}templates",
         "--add-data", f"{os.path.join(HERE, 'fonts')}{sep}fonts",
         "--hidden-import", "app",
+        "--hidden-import", "brand",
         "--paths", HERE,
     ]
     # Packages that carry data files or load submodules dynamically. Missing

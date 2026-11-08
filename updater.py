@@ -31,7 +31,7 @@ import threading
 import urllib.error
 import urllib.request
 
-VERSION = "1.1.3"
+VERSION = "1.1.4"
 
 # Where releases are published. `latest/download/<file>` always resolves to the
 # newest release, so this URL never has to change.

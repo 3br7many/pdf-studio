@@ -428,6 +428,19 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/favicon.ico")
+def favicon():
+    import re as _re
+    html = render_template("index.html")
+    m = _re.search(r'<link rel="icon" type="image/svg\+xml" href="data:image/svg\+xml;base64,([^"]+)"', html)
+    if not m:
+        return ("", 204)
+    import base64
+    from flask import Response
+    return Response(base64.b64decode(m.group(1)), mimetype="image/svg+xml",
+                    headers={"Cache-Control": "public, max-age=86400"})
+
+
 @app.route("/api/files", methods=["GET"])
 def list_files():
     return jsonify(ok=True, files=[public(f) for f in FILES.values()])
