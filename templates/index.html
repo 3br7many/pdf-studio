@@ -6,13 +6,17 @@
 <title>PDF Studio — Local PDF Toolkit</title>
 <style>
 :root{
-  --bg:#0f1115; --panel:#171a21; --panel2:#1d212a; --line:#2a2f3a;
-  --txt:#e8eaf0; --muted:#9aa3b2; --acc:#4f8cff; --acc2:#7c5cff;
-  --ok:#2ecc8f; --warn:#ffb020; --bad:#ff5f6d; --radius:12px;
+  /* light is the default: soft neutral surfaces, one calm indigo accent */
+  --bg:#f5f6f9; --panel:#ffffff; --panel2:#f0f2f7; --line:#e1e4ec;
+  --txt:#1b2230; --muted:#626c82; --acc:#4a66d8; --acc2:#7a68d6; --accfg:#ffffff;
+  --ok:#17936a; --warn:#b4731a; --bad:#d1434f; --radius:12px;
+  --ring:rgba(74,102,216,.28); --shadow:0 1px 2px rgba(20,28,50,.05),0 1px 3px rgba(20,28,50,.04);
 }
-@media (prefers-color-scheme: light){
-  :root{ --bg:#f4f6fa; --panel:#ffffff; --panel2:#f0f3f8; --line:#dde3ec;
-         --txt:#141821; --muted:#5d6675; }
+html[data-theme="dark"]{
+  --bg:#12151b; --panel:#191d25; --panel2:#212631; --line:#2c3341;
+  --txt:#e6e9f1; --muted:#98a2b8; --acc:#7f96f3; --acc2:#a591ee; --accfg:#10131c;
+  --ok:#3ccf91; --warn:#e5ad4a; --bad:#ff7b86;
+  --ring:rgba(127,150,243,.35); --shadow:0 1px 2px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);
@@ -117,17 +121,90 @@ pre.rtl{direction:rtl;text-align:right}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
 .legend b{color:var(--txt)} .legend s{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;text-decoration:none}
 .advice{margin-top:12px;padding:11px 13px;border-radius:9px;background:rgba(79,140,255,.10);border:1px solid rgba(79,140,255,.35);font-size:13.5px;line-height:1.55}
+
+/* ===== shadcn-style surface: soft, low contrast edges, visible focus ===== */
+html{color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark}
+body{font-family:"Segoe UI",Tahoma,system-ui,-apple-system,"Helvetica Neue",sans-serif;line-height:1.55}
+html[dir="rtl"] body{font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",system-ui,sans-serif}
+header{background:var(--panel);color:var(--txt);border-bottom:1px solid var(--line);padding:11px 22px;flex-wrap:wrap;gap:10px 14px}
+header h1{color:var(--txt);font-size:18px}
+header .hsub{font-size:13px;color:var(--muted)}
+header .badge,.hbtn{margin:0;background:var(--panel2);color:var(--muted);border:1px solid var(--line);
+  padding:6px 12px;border-radius:99px;font:inherit;font-size:12.5px;text-decoration:none;white-space:nowrap}
+.hbtn{cursor:pointer;color:var(--txt)}
+.hbtn:hover,header a.badge:hover{background:var(--line)}
+.hctl{margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hbadges{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.wrap{min-height:calc(100vh - 56px)}
+nav{border-right:0;border-inline-end:1px solid var(--line)}
+nav button{text-align:start;font-weight:500;transition:background .12s,color .12s}
+nav button.on{background:color-mix(in srgb,var(--acc) 13%,transparent);color:var(--acc);font-weight:600}
+h2{font-size:20px;font-weight:650}
+.card{box-shadow:var(--shadow)}
+label{color:var(--muted);font-weight:500}
+input[type=text],input[type=number],input[type=password],select,textarea{
+  background:var(--panel);border-radius:8px;transition:border-color .12s,box-shadow .12s}
+input[type=text]:focus,input[type=number]:focus,input[type=password]:focus,select:focus,textarea:focus{
+  outline:0;border-color:var(--acc);box-shadow:0 0 0 3px var(--ring)}
+button.btn{background:var(--acc);color:var(--accfg);border-radius:8px;box-shadow:var(--shadow);font-weight:600}
+button.btn:hover{filter:none;background:color-mix(in srgb,var(--acc) 88%,#000)}
+html[data-theme="dark"] button.btn:hover{background:color-mix(in srgb,var(--acc) 88%,#fff)}
+button.ghost{background:var(--panel);color:var(--txt);border:1px solid var(--line);box-shadow:none}
+button.ghost:hover{background:var(--panel2)!important}
+button:focus-visible,.chip:focus-visible,.cp-opt:focus-visible,a:focus-visible,.drop:focus-visible{
+  outline:2px solid var(--acc);outline-offset:2px}
+.chip{background:var(--panel);transition:background .12s,border-color .12s}
+.chip:hover{background:var(--panel2)}
+.chip.on{background:color-mix(in srgb,var(--acc) 13%,transparent);border-color:var(--acc);color:var(--acc);font-weight:600}
+.drop{background:var(--panel2)}
+.drop.hover{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 9%,transparent)}
+.f,.pg{background:var(--panel);box-shadow:var(--shadow)}
+.f .x{right:auto;inset-inline-end:6px}
+.cp-opt{background:var(--panel)}
+.cp-opt.on{box-shadow:0 0 0 3px var(--ring);background:color-mix(in srgb,var(--acc) 5%,var(--panel))}
+.msg.i{background:color-mix(in srgb,var(--acc) 10%,transparent);border-color:color-mix(in srgb,var(--acc) 40%,transparent)}
+.advice{background:color-mix(in srgb,var(--acc) 8%,transparent);border-color:color-mix(in srgb,var(--acc) 30%,transparent)}
+.ar{background:color-mix(in srgb,var(--acc2) 9%,transparent);border-color:color-mix(in srgb,var(--acc2) 40%,transparent)}
+.out{background:color-mix(in srgb,var(--ok) 9%,transparent)}
+.tag{background:var(--panel2)}
+th,td{text-align:start}
+.legend s{margin-right:0;margin-inline-end:6px}
+.stage{direction:ltr}
+/* generated markup uses physical margins; flip them for RTL */
+[style*="margin-left:auto"]{margin-left:0!important;margin-inline-start:auto!important}
+[style*="margin-left:6px"]{margin-left:0!important;margin-inline-start:6px!important}
+html[dir="rtl"] select{background-position:left 10px center}
+/* dialog (replaces the browser's alert) */
+.dlg-ov{position:fixed;inset:0;background:rgba(14,20,36,.42);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.dlg{background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 24px 60px rgba(10,16,32,.28);width:100%;max-width:440px;padding:20px 22px}
+.dlg h3{margin:0 0 6px;font-size:16px}
+.dlg p{margin:0 0 18px;color:var(--muted);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.dlg .acts{display:flex;justify-content:flex-end}
+@media (max-width:760px){.wrap{flex-direction:column}nav{width:auto;flex:0 0 auto;border-inline-end:0;border-bottom:1px solid var(--line);
+  display:flex;flex-wrap:wrap;gap:4px}nav .sep{display:none}nav button{width:auto}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:.01ms!important}}
 </style>
+<script>
+try{var _t=localStorage.getItem('pdfs_theme'),_l=localStorage.getItem('pdfs_lang');
+var _h=document.documentElement;if(_t==='dark')_h.setAttribute('data-theme','dark');
+if(_l==='ar'){_h.lang='ar';_h.dir='rtl';}}catch(e){}
+</script>
 </head>
 <body>
 <header>
   <h1>📄 PDF Studio</h1>
-  <span style="font-size:13px;opacity:.9">Local PDF toolkit · full Arabic support</span>
-  <span class="badge" id="ver">🔒 Nothing leaves this machine</span>
-  <a class="badge" href="https://github.com/3br7many/pdf-studio" target="_blank" rel="noopener"
-     style="color:inherit;text-decoration:none;margin-left:8px">Source · AGPL-3.0</a>
-  <button class="badge" id="upd-btn" onclick="checkUpdate(true)" title="Needs an internet connection"
-          style="cursor:pointer;border:0;font:inherit;margin-left:8px">🔄 Check for updates</button>
+  <span class="hsub">Local PDF toolkit · full Arabic support</span>
+  <div class="hbadges">
+    <span class="badge" id="ver">🔒 Nothing leaves this machine</span>
+    <a class="badge" href="https://github.com/3br7many/pdf-studio" target="_blank" rel="noopener">Source · AGPL-3.0</a>
+  </div>
+  <div class="hctl">
+    <button class="hbtn" id="upd-btn" type="button" onclick="checkUpdate(true)" title="Needs an internet connection">🔄 Check for updates</button>
+    <button class="hbtn" id="lang-btn" type="button" data-notr aria-label="Language">العربية</button>
+    <button class="hbtn" id="theme-btn" type="button" data-notr aria-label="Theme">☾ Dark</button>
+  </div>
 </header>
 
 <div class="wrap">
@@ -518,6 +595,146 @@ pre.rtl{direction:rtl;text-align:right}
 </main>
 </div>
 
+
+<script>
+/* ===== theme, language (EN/AR + RTL) and dialog ===== */
+(function(){
+  const D = {"Local PDF toolkit": "أدوات PDF محلية", "full Arabic support": "دعم كامل للعربية", "Nothing leaves this machine": "لا شيء يغادر جهازك", "Source": "الكود المصدري", "Check for updates": "التحقق من التحديثات", "Checking…": "جارٍ التحقق…", "Needs an internet connection": "يتطلب اتصالاً بالإنترنت", "Dark": "داكن", "Light": "فاتح", "Files": "الملفات", "Merge": "دمج", "Organize pages": "ترتيب الصفحات", "Split": "تقسيم", "Extract & convert": "استخراج وتحويل", "OCR": "التعرف على النص (OCR)", "Compress": "ضغط", "Security": "الحماية", "Watermark": "علامة مائية", "Edit page": "تعديل الصفحة", "Sign & stamp": "توقيع وختم", "Fill forms": "تعبئة النماذج", "Upload PDFs, or images to use as signatures, stamps and logos. Everything is processed locally.": "ارفع ملفات PDF أو صوراً لاستخدامها كتوقيعات وأختام وشعارات. كل المعالجة تتم محلياً على جهازك.", "Drop files here, or click to browse": "أفلت الملفات هنا أو اضغط للتصفح", "PDF · PNG · JPG — multiple files at once": "PDF · PNG · JPG — يمكن رفع عدة ملفات معاً", "Session library": "مكتبة الجلسة", "Refresh": "تحديث", "Uploading…": "جارٍ الرفع…", "No files yet.": "لا توجد ملفات بعد.", "Download": "تنزيل", "Use as input": "استخدمه كمدخل", "Working…": "جارٍ العمل…", "The result is now selected across all tools.": "تم اختيار النتيجة الآن في كل الأدوات.", "Merge PDFs": "دمج ملفات PDF", "Click files in the order you want them combined — the number shows their position.": "اضغط على الملفات بالترتيب الذي تريده — الرقم يوضح موضع كل ملف.", "Merge files": "دمج الملفات", "Select": "اختيار", "Upload some PDFs from the Files tab first.": "ارفع بعض ملفات PDF من صفحة الملفات أولاً.", "Pick at least two files.": "اختر ملفين على الأقل.", "Delete, rotate and reorder pages by dragging them.": "احذف الصفحات وأدرها وأعد ترتيبها بالسحب.", "PDF file": "ملف PDF", "Rotate all ↻": "تدوير الكل ↻", "Rotate all ↺": "تدوير الكل ↺", "Reset changes": "إلغاء التغييرات", "Save as new file": "حفظ كملف جديد", "Rotate left": "تدوير لليسار", "Rotate right": "تدوير لليمين", "Delete / restore": "حذف / استعادة", "A PDF needs at least one page.": "يجب أن يحتوي الملف على صفحة واحدة على الأقل.", "Split a PDF": "تقسيم ملف PDF", "Break a file into single pages, fixed-size groups, or custom ranges.": "قسّم الملف إلى صفحات منفردة أو مجموعات ثابتة أو نطاقات مخصصة.", "File": "الملف", "Method": "الطريقة", "One file per page": "ملف لكل صفحة", "Every N pages": "كل N صفحات", "Custom ranges": "نطاقات مخصصة", "Extract range into one file": "استخراج نطاق في ملف واحد", "Pages per file": "عدد الصفحات في كل ملف", "Ranges": "النطاقات", "Each range becomes its own file. Example:": "كل نطاق يصبح ملفاً مستقلاً. مثال:", "Pull out text, tables and images, or convert the file to Word, Excel or PNG.": "استخرج النصوص والجداول والصور، أو حوّل الملف إلى Word أو Excel أو PNG.", "Output": "المخرجات", "Text (TXT)": "نص (TXT)", "Text, column layout": "نص بتخطيط الأعمدة", "Convert to Word": "تحويل إلى Word", "Tables to Excel": "الجداول إلى Excel", "Embedded images": "الصور المضمّنة", "Pages as PNG": "الصفحات كصور PNG", "Pages": "الصفحات", "all, or 1-5,8": "all أو 1-5,8", "Resolution (DPI)": "الدقة (DPI)", "Arabic handling.": "التعامل مع العربية.", "Many Arabic PDFs store text as pre-rendered glyphs in visual order, which comes out reversed and disconnected in normal extraction. PDF Studio detects that and rebuilds the proper letters and reading order.": "كثير من ملفات PDF العربية تخزّن النص كحروف مرسومة بترتيب بصري، فيخرج معكوساً ومفكك الحروف في الاستخراج العادي. يكتشف PDF Studio ذلك ويعيد بناء الحروف الصحيحة وترتيب القراءة.", "Letter order repair": "إصلاح ترتيب الحروف", "Auto — repair only when needed (recommended)": "تلقائي — الإصلاح عند الحاجة فقط (موصى به)", "Always repair every Arabic line": "إصلاح كل سطر عربي دائماً", "Off — raw extraction": "إيقاف — استخراج خام", "Word conversion mode": "وضع التحويل إلى Word", "Auto — text mode for Arabic, layout mode otherwise": "تلقائي — وضع النص للعربية ووضع التخطيط لغيرها", "Layout — keep formatting (poor with Arabic)": "التخطيط — يحافظ على التنسيق (ضعيف مع العربية)", "Text — Arabic-safe, right-to-left paragraphs": "النص — آمن للعربية بفقرات من اليمين لليسار", "Run": "تشغيل", "OCR — make a scan searchable": "التعرف على النص — اجعل الملف الممسوح قابلاً للبحث", "For scanned or photographed documents. Requires Tesseract installed on this machine.": "للمستندات الممسوحة ضوئياً أو المصوّرة. يتطلب تثبيت Tesseract على هذا الجهاز.", "Language": "اللغة", "Arabic + English": "عربي + إنجليزي", "Arabic": "عربي", "English": "إنجليزي", "Run OCR": "تشغيل OCR", "Make a large PDF smaller. Start with": "صغّر ملف PDF الكبير. ابدأ بـ", "Analyze": "تحليل", "to see what is taking up the space.": "لمعرفة ما الذي يشغل المساحة.", "Analyze this file": "تحليل هذا الملف", "Choose how far to go": "اختر مدى الضغط", "Keep quality exactly": "الحفاظ على الجودة تماماً", "No pixel changes": "بدون أي تغيير في البكسلات", "Removes wasted space only — repeated images stored once, streams recompressed, unused objects dropped. Every page comes out identical. Typically 5–40% smaller; more if the file was saved wastefully.": "يزيل المساحة المهدرة فقط — الصور المكررة تُخزَّن مرة واحدة، وتُعاد ضغط البيانات، وتُحذف العناصر غير المستخدمة. كل صفحة تخرج مطابقة تماماً. عادةً أصغر بنسبة 5–40%، وأكثر إذا كان الملف محفوظاً بشكل مهدِر.", "Smaller": "أصغر", "recommended": "موصى به", "Looks the same": "يبدو مطابقاً", "Also reduces images that are stored at more resolution than any screen or printer can show (above 200 DPI, down to 150). Fine for reading, email and normal printing.": "يقلّل أيضاً الصور المخزّنة بدقة أعلى مما تستطيع الشاشة أو الطابعة عرضه (فوق 200 DPI، إلى 150). مناسب للقراءة والبريد والطباعة العادية.", "Smallest": "الأصغر", "Trades quality for size": "يضحّي بالجودة مقابل الحجم", "Reduces images to 96 DPI at lower JPEG quality. Best for sharing on screen or by email. Photos and scans become noticeably softer, and fine print may blur.": "يقلّل الصور إلى 96 DPI بجودة JPEG أقل. الأنسب للمشاركة على الشاشة أو بالبريد. الصور الفوتوغرافية والممسوحة ضوئياً تصبح أنعم بشكل ملحوظ، وقد تتشوّش الكتابة الدقيقة.", "Reading the file…": "جارٍ قراءة الملف…", "Images": "الصور", "Fonts": "الخطوط", "Text & layout": "النص والتخطيط", "Add a password and permissions, or remove protection from a file you have the password for.": "أضف كلمة مرور وصلاحيات، أو أزل الحماية عن ملف تملك كلمة مروره.", "Add a password": "إضافة كلمة مرور", "Open password": "كلمة مرور الفتح", "Owner password (optional)": "كلمة مرور المالك (اختيارية)", "Allowed actions": "الإجراءات المسموحة", "Printing": "الطباعة", "Copying text": "نسخ النص", "Comments": "التعليقات", "Editing": "التعديل", "Encrypt": "تشفير", "Remove protection": "إزالة الحماية", "Current password": "كلمة المرور الحالية", "Unlock": "فك القفل", "Text or a logo, with adjustable opacity and angle, on all pages or a selection.": "نص أو شعار بشفافية وزاوية قابلة للضبط، على كل الصفحات أو بعضها.", "Type": "النوع", "Text": "نص", "Image / logo": "صورة / شعار", "Arabic works here — letters are shaped and ordered correctly using the bundled font. Try": "العربية تعمل هنا — تُشكَّل الحروف وتُرتَّب بشكل صحيح باستخدام الخط المرفق. جرّب", "Size": "الحجم", "Colour": "اللون", "Tile across the whole page": "تكرار على كامل الصفحة", "Image": "الصورة", "Relative size:": "الحجم النسبي:", "Opacity:": "الشفافية:", "Angle:": "الزاوية:", "Layer": "الطبقة", "Above the content": "فوق المحتوى", "Behind the content": "خلف المحتوى", "Apply": "تطبيق", "Drag a box over anything on the page, then erase it, retype it, or drop an image in its place.": "اسحب مربعاً فوق أي عنصر في الصفحة، ثم احذفه أو أعد كتابته أو ضع صورة مكانه.", "Page": "الصفحة", "Drag on the page below to select a region. Everything inside it is": "اسحب على الصفحة أدناه لتحديد منطقة. كل ما بداخلها", "removed from the file": "يُحذف من الملف", "not covered over.": "وليس مجرد تغطيته.", "Apply changes": "تطبيق التغييرات", "Clear selection": "مسح التحديد", "No regions selected yet.": "لم يتم تحديد أي منطقة بعد.", "Erase it": "احذفه", "Erase and type new text": "احذفه واكتب نصاً جديداً", "Erase and place an image": "احذفه وضع صورة", "Remove": "إزالة", "no text detected here": "لم يُكتشف نص هنا", "reading…": "جارٍ القراءة…", "New text": "النص الجديد", "Match the original font, size and colour": "مطابقة الخط والحجم واللون الأصليين", "upload an image from the Files tab —": "ارفع صورة من صفحة الملفات —", "Find and replace text": "بحث واستبدال النص", "The replacement is set in the same font, size and colour as the text it replaces — read from the file itself, including the embedded font.": "يُكتب البديل بنفس خط وحجم ولون النص الذي يستبدله — تتم قراءتها من الملف نفسه، بما في ذلك الخط المضمّن.", "Find": "بحث عن", "Replace with": "استبدال بـ", "Match upper/lower case exactly": "مطابقة حالة الأحرف تماماً", "Replace": "استبدال", "Images on this page": "الصور في هذه الصفحة", "Pick a logo or stamp to remove, or to swap for another image.": "اختر شعاراً أو ختماً لإزالته أو استبداله بصورة أخرى.", "Looking…": "جارٍ البحث…", "No images on this page.": "لا توجد صور في هذه الصفحة.", "Could not read the images.": "تعذّرت قراءة الصور.", "Select to erase": "تحديد للحذف", "Select to replace": "تحديد للاستبدال", "Select a PDF file.": "اختر ملف PDF.", "Drag a box over something on the page first.": "اسحب مربعاً فوق عنصر في الصفحة أولاً.", "One of the regions is set to \"type new text\" but has no text.": "إحدى المناطق مضبوطة على \"كتابة نص جديد\" لكن بدون نص.", "Upload an image from the Files tab first, then pick it for that region.": "ارفع صورة من صفحة الملفات أولاً ثم اختارها لهذه المنطقة.", "Drop a signature or stamp image anywhere — click the preview to place it.": "ضع صورة توقيع أو ختم في أي مكان — اضغط على المعاينة لتحديد موضعها.", "Signature / stamp image": "صورة التوقيع / الختم", "Preview page": "صفحة المعاينة", "Apply to pages": "تطبيق على الصفحات", "1, or all, or 2-5": "1 أو all أو 2-5", "Width:": "العرض:", "Click anywhere on the preview to set the centre point.": "اضغط في أي مكان على المعاينة لتحديد نقطة المنتصف.", "Add signature": "إضافة التوقيع", "Add free text": "إضافة نص حر", "For a date, a name or a short note. Arabic is rendered correctly.": "لتاريخ أو اسم أو ملاحظة قصيرة. العربية تُعرض بشكل صحيح.", "Approved — 23/08/2026": "معتمد — 23/08/2026", "Horizontal:": "أفقي:", "Vertical from top:": "رأسي من الأعلى:", "Add text": "إضافة النص", "Upload a signature image from the Files tab first.": "ارفع صورة توقيع من صفحة الملفات أولاً.", "Fill PDF forms": "تعبئة نماذج PDF", "Reads the form fields automatically and fills them in.": "يقرأ حقول النموذج تلقائياً ويملؤها.", "no file with fillable fields —": "لا يوجد ملف بحقول قابلة للتعبئة —", "Flatten the fields (values become part of the page, no longer editable)": "تسطيح الحقول (تصبح القيم جزءاً من الصفحة ولا تعود قابلة للتعديل)", "Arabic values are always flattened, whether or not the box above is ticked. Interactive PDF form fields render with built-in fonts that contain no Arabic glyphs, so an editable field would show empty boxes in most viewers. Flattening draws the text onto the page with a real Arabic font instead.": "القيم العربية تُسطَّح دائماً سواء فعّلت الخيار أعلاه أم لا. حقول النماذج التفاعلية تستخدم خطوطاً مدمجة لا تحتوي حروفاً عربية، فيظهر الحقل القابل للتعديل كمربعات فارغة في معظم القارئات. التسطيح يرسم النص على الصفحة بخط عربي حقيقي بدلاً من ذلك.", "Save filled form": "حفظ النموذج المعبأ", "No file with fillable fields. Upload a fillable PDF form.": "لا يوجد ملف بحقول قابلة للتعبئة. ارفع نموذج PDF قابلاً للتعبئة.", "Reading fields…": "جارٍ قراءة الحقول…", "This file has no fillable fields.": "لا يحتوي هذا الملف على حقول قابلة للتعبئة.", "Enter at least one value.": "أدخل قيمة واحدة على الأقل.", "Update now": "حدّث الآن", "Later": "لاحقاً", "Close": "إغلاق", "Updating…": "جارٍ التحديث…", "Update failed": "فشل التحديث", "Could not check for updates. Make sure you are connected to the internet, then try again.": "تعذّر التحقق من التحديثات. تأكد من اتصالك بالإنترنت ثم حاول مرة أخرى.", "OK": "حسناً", "protected": "محمي", "form": "نموذج", "bold": "عريض", "italic": "مائل"};
+  const RULES = [["^(\\d+) of (\\d+) pages will be saved$", "سيتم حفظ $1 من $2 صفحة"], ["^page (\\d+)(.*)$", "صفحة $1$2"], ["^position (\\d+)$", "الترتيب $1"], ["^(\\d+) pages?$", "$1 صفحة"], ["^image (\\d+)$", "صورة $1"], ["^Region (\\d+)$", "المنطقة $1"], ["^(\\d+) images?, (\\d+) stored above 200 DPI(.*)$", "$1 صورة، $2 منها بدقة أعلى من 200 DPI$3"], ["^Version (.+) is available$", "الإصدار $1 متاح"], ["^you have (.+)$", "إصدارك $1"], ["^You are on the latest version \\((.+)\\)\\.$", "أنت على أحدث إصدار ($1)."]].map(r => [new RegExp(r[0]), r[1]]);
+  const NOTR = 'script,style,pre,textarea,[data-notr],.n';
+  const root = document.documentElement;
+  const H = document.querySelector('header');
+  let LANG = root.getAttribute('lang') === 'ar' ? 'ar' : 'en';
+  const hasAr = s => /[؀-ۿ]/.test(s);
+  const norm = s => s.replace(/\s+/g, ' ').trim();
+
+  function lookup(core){
+    if (D[core]) return D[core];
+    for (const [re, rep] of RULES){ const m = core.match(re); if (m) return core.replace(re, rep); }
+    return null;
+  }
+  function tr(s){
+    if (LANG !== 'ar' || !s) return s;
+    const m = s.match(/^(\s*[^A-Za-z0-9؀-ۿ\s]*\s*)([\s\S]*?)(\s*)$/);
+    const lead = m[1], core = norm(m[2]), tail = m[3];
+    if (!core) return s;
+    let out = lookup(core);
+    if (out === null && core.includes(' · ')){
+      let changed = false;
+      const parts = core.split(' · ').map(p => {
+        const pm = p.match(/^([^A-Za-z0-9؀-ۿ]*)([\s\S]*)$/);
+        const t = lookup(pm[2]);
+        if (t === null) return p; changed = true; return pm[1] + t;
+      });
+      if (changed) out = parts.join(' · ');
+    }
+    if (out === null) return s;
+    return lead.replace(/,/g, '،') + out + tail;
+  }
+
+  /* text nodes and attributes */
+  const M = new Map();                       // text node -> {o: original, t: translated}
+  function applyNode(n){
+    const p = n.parentElement;
+    if (!p || p.closest(NOTR)) return;
+    const v = n.nodeValue;
+    if (!v.trim()) return;
+    if (LANG === 'ar'){
+      const e = M.get(n);
+      const o = (e && e.t === v) ? e.o : v;
+      if (hasAr(o)) return;
+      const t = tr(o);
+      if (t !== o){ M.set(n, {o, t}); n.nodeValue = t; }
+    }
+  }
+  function applyAttrs(el){
+    if (el.closest && el.closest('[data-notr]')) return;
+    ['placeholder', 'title'].forEach(a => {
+      if (!el.hasAttribute(a)) return;
+      const k = 'data-o-' + a;
+      if (LANG === 'ar'){
+        const o = el.hasAttribute(k) ? el.getAttribute(k) : el.getAttribute(a);
+        const t = tr(o);
+        if (t !== o){ el.setAttribute(k, o); el.setAttribute(a, t); }
+      } else if (el.hasAttribute(k)){
+        el.setAttribute(a, el.getAttribute(k)); el.removeAttribute(k);
+      }
+    });
+  }
+  function walk(r){
+    const w = document.createTreeWalker(r, NodeFilter.SHOW_TEXT), list = [];
+    while (w.nextNode()) list.push(w.currentNode);
+    list.forEach(applyNode);
+    if (r.nodeType === 1){ applyAttrs(r); r.querySelectorAll('[placeholder],[title]').forEach(applyAttrs); }
+  }
+  const obs = new MutationObserver(recs => {
+    obs.disconnect();
+    if (LANG === 'ar') recs.forEach(r => {
+      if (r.type === 'characterData') applyNode(r.target);
+      else r.addedNodes.forEach(n => { if (n.nodeType === 3) applyNode(n); else if (n.nodeType === 1) walk(n); });
+    });
+    obs.observe(document.body, {childList: true, characterData: true, subtree: true});
+  });
+
+  window.updLabel = () => (window.__ver ? tr('🔄 v' + window.__ver + ' · Check for updates') : tr('🔄 Check for updates'));
+
+  function setBtns(){
+    const lb = document.getElementById('lang-btn'), tb = document.getElementById('theme-btn');
+    lb.textContent = LANG === 'ar' ? 'English' : 'العربية';
+    const dark = root.getAttribute('data-theme') === 'dark';
+    tb.textContent = dark ? '☀ ' + tr('Light') : '☾ ' + tr('Dark');
+  }
+  function setLang(l, save){
+    obs.disconnect();
+    LANG = l;
+    root.lang = l; root.dir = l === 'ar' ? 'rtl' : 'ltr';
+    if (l === 'ar') walk(document.body);
+    else {
+      M.forEach((e, n) => { if (n.isConnected) n.nodeValue = e.o; });
+      M.clear();
+      document.querySelectorAll('[data-o-placeholder],[data-o-title]').forEach(applyAttrs);
+    }
+    const ub = document.getElementById('upd-btn');
+    if (ub) ub.textContent = window.updLabel();
+    setBtns();
+    if (save){ try{ localStorage.setItem('pdfs_lang', l); }catch(e){} }
+    obs.observe(document.body, {childList: true, characterData: true, subtree: true});
+  }
+  function setTheme(t, save){
+    if (t === 'dark') root.setAttribute('data-theme', 'dark'); else root.removeAttribute('data-theme');
+    setBtns();
+    if (save){ try{ localStorage.setItem('pdfs_theme', t); }catch(e){} }
+  }
+  document.getElementById('lang-btn').onclick = () => setLang(LANG === 'ar' ? 'en' : 'ar', true);
+  document.getElementById('theme-btn').onclick = () =>
+    setTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
+
+  /* dialog in place of the browser's alert() */
+  let ov = null;
+  function dlg(msg){
+    if (ov) ov.remove();
+    ov = document.createElement('div');
+    ov.className = 'dlg-ov';
+    ov.innerHTML = '<div class="dlg" role="dialog" aria-modal="true" aria-labelledby="dlg-t"><h3 id="dlg-t"></h3><p></p>' +
+                   '<div class="acts"><button class="btn" type="button"></button></div></div>';
+    ov.querySelector('h3').textContent = 'PDF Studio';
+    ov.querySelector('p').textContent = tr(String(msg));
+    const ok = ov.querySelector('button');
+    ok.textContent = tr('OK');
+    const close = () => { document.removeEventListener('keydown', onKey); ov && ov.remove(); ov = null; };
+    const onKey = e => { if (e.key === 'Escape' || e.key === 'Enter') { e.preventDefault(); close(); } };
+    ok.onclick = close;
+    ov.addEventListener('mousedown', e => { if (e.target === ov) close(); });
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(ov);
+    ok.focus();
+  }
+  window.alert = dlg;
+
+  /* start */
+  if (LANG === 'ar') setLang('ar', false); else { setBtns(); obs.observe(document.body, {childList: true, characterData: true, subtree: true}); }
+})();
+</script>
 <script>
 let FILES = [];
 const $ = s => document.querySelector(s);
@@ -1082,7 +1299,7 @@ async function checkUpdate(manual){
   } catch (e) {
     if (manual) updMsg('⚠️ Could not check for updates. Make sure you are connected to the internet, then try again.', '', true);
   } finally {
-    if (manual && btn) btn.textContent = prev;
+    if (manual && btn) btn.textContent = window.updLabel();
   }
 }
 
@@ -1112,7 +1329,7 @@ async function applyUpdate(btn){
 (async () => {
   try {
     const v = await (await fetch('/api/version')).json();
-    $('#upd-btn').textContent = `🔄 v${v.version} · Check for updates`;
+    window.__ver = v.version; $('#upd-btn').textContent = window.updLabel();
   } catch (e) {}
 })();
 
