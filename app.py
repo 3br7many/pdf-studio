@@ -1806,6 +1806,11 @@ def update_check():
     return jsonify(**updater.check())
 
 
+@app.route("/api/version")
+def app_version():
+    return jsonify(version=updater.current_version())
+
+
 @app.route("/api/update/apply", methods=["POST"])
 def update_apply():
     return jsonify(**updater.apply())

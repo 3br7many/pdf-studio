@@ -124,6 +124,10 @@ pre.rtl{direction:rtl;text-align:right}
   <h1>📄 PDF Studio</h1>
   <span style="font-size:13px;opacity:.9">Local PDF toolkit · full Arabic support</span>
   <span class="badge" id="ver">🔒 Nothing leaves this machine</span>
+  <a class="badge" href="https://github.com/3br7many/pdf-studio" target="_blank" rel="noopener"
+     style="color:inherit;text-decoration:none;margin-left:8px">Source · AGPL-3.0</a>
+  <button class="badge" id="upd-btn" onclick="checkUpdate(true)" title="Needs an internet connection"
+          style="cursor:pointer;border:0;font:inherit;margin-left:8px">🔄 Check for updates</button>
 </header>
 
 <div class="wrap">
@@ -1055,16 +1059,20 @@ function doReplace(){
 /* ---------- Updates ---------- */
 async function checkUpdate(manual){
   const bar = $('#update-bar');
+  const btn = $('#upd-btn');
+  const prev = btn ? btn.textContent : '';
+  if (manual && btn) btn.textContent = '⏳ Checking…';
   try {
     const j = await (await fetch('/api/update/check')).json();
     if (!j.ok){
-      if (manual) alert('Could not check for updates: ' + j.error);
+      if (manual) updMsg('⚠️ Could not check for updates. Make sure you are connected to the internet, then try again.', j.error, true);
       return;
     }
     if (!j.available){
-      if (manual) alert(`You are on the latest version (${j.current}).`);
+      if (manual) updMsg(`✅ You are on the latest version (${j.current}).`, '', false);
       return;
     }
+    bar.style.borderColor = 'var(--ok)';
     bar.innerHTML = `<b>Version ${j.latest} is available</b>
       <span class="tag">you have ${j.current}</span>
       ${j.notes ? `<span style="color:var(--muted)">${j.notes}</span>` : ''}
@@ -1072,8 +1080,18 @@ async function checkUpdate(manual){
       <button class="btn ghost" onclick="$('#update-bar').classList.add('hide')">Later</button>`;
     bar.classList.remove('hide');
   } catch (e) {
-    if (manual) alert('Could not check for updates.');
+    if (manual) updMsg('⚠️ Could not check for updates. Make sure you are connected to the internet, then try again.', '', true);
+  } finally {
+    if (manual && btn) btn.textContent = prev;
   }
+}
+
+function updMsg(text, detail, bad){
+  const bar = $('#update-bar');
+  bar.style.borderColor = bad ? 'var(--bad)' : 'var(--ok)';
+  bar.innerHTML = `<b>${text}</b>${detail ? `<span style="color:var(--muted)">${detail}</span>` : ''}
+    <button class="btn ghost" style="margin-left:auto" onclick="$('#update-bar').classList.add('hide')">Close</button>`;
+  bar.classList.remove('hide');
 }
 
 async function applyUpdate(btn){
@@ -1090,6 +1108,13 @@ async function applyUpdate(btn){
     btn.disabled = false; btn.textContent = 'Update now';
   }
 }
+
+(async () => {
+  try {
+    const v = await (await fetch('/api/version')).json();
+    $('#upd-btn').textContent = `🔄 v${v.version} · Check for updates`;
+  } catch (e) {}
+})();
 
 setTimeout(() => checkUpdate(false), 1500);
 

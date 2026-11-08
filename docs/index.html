@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF Studio</title>
+<meta name="description" content="A free PDF toolkit for Windows that runs on your own computer, with full Arabic support. Merge, split, compress, OCR, edit text in place, sign and more.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap">
+<style>
+:root{
+  --bg:#f6f7fb;--panel:#fff;--panel2:#eef0f8;--line:#dde1ee;--fg:#161a2b;--muted:#5b6380;
+  --acc:#5b5bf0;--acc2:#2f8cf0;--accfg:#fff;--code:#eaedf8;--warn:#b26a00;
+  --display:"Sora","Segoe UI",system-ui,sans-serif;--body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#0e1220;--panel:#151a2d;--panel2:#1c2238;--line:#272e49;--fg:#e8ebf7;--muted:#97a0c0;--acc:#8a8cff;--acc2:#5eb0ff;--accfg:#0e1220;--code:#10152a;--warn:#f0b04a;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 var(--body)}
+.w{max-width:960px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-left))}
+header.hero{background:linear-gradient(120deg,#6a4cf0,#2f8cf0);color:#fff}
+.hero .w{padding-block:56px 60px}
+.hero h1{font:700 clamp(34px,6vw,52px)/1.08 var(--display);margin:0 0 14px;letter-spacing:-.02em}
+.hero p{font-size:18px;max-width:46ch;margin:0 0 26px;opacity:.95}
+.btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-block;font:600 16px var(--body);padding:13px 22px;border-radius:10px;text-decoration:none}
+.btn.main{background:#fff;color:#2b2fa8}
+.btn.ghost{border:1.5px solid rgba(255,255,255,.65);color:#fff}
+.small{font-size:13.5px;opacity:.9;margin-top:14px}
+section{padding-block:44px 0}
+h2{font:600 24px/1.25 var(--display);margin:0 0 8px}
+.lede{color:var(--muted);margin:0 0 20px;max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.card b{display:block;margin-bottom:2px}
+.card span{color:var(--muted);font-size:14.5px}
+ol.steps{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:s}
+ol.steps li{counter-increment:s;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 56px;position:relative}
+ol.steps li::before{content:counter(s);position:absolute;left:16px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--acc);color:var(--accfg);font:600 14px/26px var(--display);text-align:center}
+.note{border-left:3px solid var(--warn);background:var(--panel);border-radius:0 10px 10px 0;padding:10px 16px;margin-top:14px}
+code{font:13.5px var(--mono);background:var(--code);padding:1px 6px;border-radius:5px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+a{color:var(--acc)}
+footer{margin-top:56px;border-top:1px solid var(--line);padding-block:24px 40px;color:var(--muted);font-size:14px}
+a:focus-visible,.btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="w">
+  <h1>PDF Studio</h1>
+  <p>A free PDF toolkit for Windows that runs entirely on your computer, with full Arabic support.</p>
+  <div class="btns">
+    <a class="btn main" href="https://github.com/3br7many/pdf-studio/releases/download/portable/PDFStudio-portable.zip">Download for Windows</a>
+    <a class="btn ghost" href="https://github.com/3br7many/pdf-studio">Source code</a>
+  </div>
+  <div class="small">About 130 MB · no installation · no administrator rights · free and open source (AGPL-3.0)</div>
+</div></header>
+
+<main class="w">
+  <section>
+    <h2>What you can do</h2>
+    <p class="lede">Eleven tools in one window. Results can be chained, so you can merge, watermark, compress and protect in a row.</p>
+    <div class="grid">
+      <div class="card"><b>Merge &amp; split</b><span>Combine files in the order you choose, or cut by pages, ranges or every N pages.</span></div>
+      <div class="card"><b>Organize pages</b><span>Delete, rotate and reorder pages with thumbnails.</span></div>
+      <div class="card"><b>Compress</b><span>Analyze first, then Lossless, Balanced or Maximum, with a visual check against the original.</span></div>
+      <div class="card"><b>Edit page</b><span>Erase or retype text in the original font. Erasing really removes the old text.</span></div>
+      <div class="card"><b>Extract &amp; convert</b><span>Text, Word, Excel tables, images and pages as PNG.</span></div>
+      <div class="card"><b>OCR</b><span>Make scanned pages searchable, Arabic included.</span></div>
+      <div class="card"><b>Security</b><span>AES-256 encryption with permissions, and password removal.</span></div>
+      <div class="card"><b>Watermark, sign &amp; forms</b><span>Text or logo watermarks, signature stamps and fillable forms.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Private by design</h2>
+    <p class="lede">The app runs a small server on 127.0.0.1 only. Your files stay on your computer. The only network use is the optional check for a newer version.</p>
+  </section>
+
+  <section>
+    <h2>Get started</h2>
+    <ol class="steps">
+      <li><b>Download</b> the zip and extract it anywhere, for example your Desktop.</li>
+      <li><b>Open</b> the extracted folder and run <code>PDF Studio.exe</code>.</li>
+      <li>If Windows shows <b>"Windows protected your PC"</b>, click <b>More info</b>, then <b>Run anyway</b>.</li>
+    </ol>
+    <div class="note">The app is not code-signed yet, so Windows shows that warning for new downloads. If Smart App Control is turned on, Windows may block it with no option to continue. In that case it cannot run on that computer until the app is signed.</div>
+    <p class="lede" style="margin-top:16px">The SHA-256 checksum of the download is in the <a href="https://github.com/3br7many/pdf-studio/releases/tag/portable">release notes</a>, so you can confirm the file is intact.</p>
+  </section>
+
+  <section>
+    <div class="two">
+      <div>
+        <h2>Stays up to date</h2>
+        <p class="lede">The app checks for a newer signed version and offers it with one click. It refuses any update whose signature does not match.</p>
+      </div>
+      <div>
+        <h2>Free and open source</h2>
+        <p class="lede">Released under the GNU Affero General Public License v3.0. Read the code, report problems or suggest features on <a href="https://github.com/3br7many/pdf-studio/issues">GitHub</a>.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="w">By Abdelrahman Younes. Provided as is, without warranty. Built on PyMuPDF (AGPL-3.0) and other open source libraries; the Amiri typeface is under the SIL Open Font License.</div></footer>
+</body>
+</html>
