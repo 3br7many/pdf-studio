@@ -1881,6 +1881,32 @@ def update_apply():
     return jsonify(**updater.apply(meta if info.get("available") else None))
 
 
+@app.route("/api/update/restart", methods=["POST"])
+def update_restart():
+    """Close this copy and start a fresh one, so an installed update takes
+    effect. Only meaningful in the installed Windows app."""
+    if not getattr(sys, "frozen", False) or os.name != "nt":
+        return jsonify(ok=False, manual=True,
+                       error="automatic restart only works in the installed app")
+    import subprocess
+    exe = sys.executable
+    try:
+        env = {k: v for k, v in os.environ.items() if k != "PDFSTUDIO_HOME"}
+        env["PYINSTALLER_RESET_ENVIRONMENT"] = "1"      # let the child start clean
+        # A stale lock would make the new copy think this one is still running.
+        try:
+            os.remove(os.path.join(updater.state_dir(), "running.port"))
+        except OSError:
+            pass
+        flags = 0x08000000 | 0x00000008 | 0x00000200   # no window, detached, own group
+        subprocess.Popen('cmd /c ping -n 3 127.0.0.1 >nul & "%s"' % exe,
+                         env=env, creationflags=flags, close_fds=True, shell=False)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e))
+    threading.Timer(1.0, os._exit, [0]).start()
+    return jsonify(ok=True)
+
+
 @app.route("/api/update/rollback", methods=["POST"])
 def update_rollback():
     return jsonify(**updater.rollback())
