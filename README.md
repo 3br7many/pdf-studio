@@ -68,6 +68,11 @@ Found a bug or have a suggestion? Open an
 [issue](https://github.com/3br7many/pdf-studio/issues). Please do not attach
 files that contain private information.
 
+## Support
+
+PDF Studio is free and will stay free. If it is useful to you, you can
+[leave a tip](https://paypal.me/3br7man74). It is optional.
+
 ## License
 
 Copyright (C) 2026 Abdelrahman Younes.
