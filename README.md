@@ -62,6 +62,10 @@ The first run builds its own environment, then opens `http://127.0.0.1:8765`.
 To build the standalone application, run `python build_app.py`. See
 [docs/MAINTAINER.md](docs/MAINTAINER.md) for build and release notes.
 
+## Author
+
+Abdelrahman Younes, IT Support Engineer. [GitHub](https://github.com/3br7many) · [LinkedIn](https://www.linkedin.com/in/abdelrahman-younes-235515400) · abdoyones74@gmail.com
+
 ## Support
 
 Found a bug or have a suggestion? Open an
