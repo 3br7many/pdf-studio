@@ -1814,9 +1814,53 @@ def ocr():
 import updater
 
 
+# Releases that need new libraries cannot be installed as a small update: the
+# application bundle itself has to be replaced. Such a release says so with
+# `needs_base` in update.json, and the app then offers the full download in the
+# same update bar instead of installing it. updater.py is NOT used for this on
+# purpose: the copy inside an installed bundle is the one that runs, so any
+# new logic has to live here, in a file an update is allowed to replace.
+FULL_DOWNLOAD_URL = ("https://github.com/3br7many/pdf-studio/releases/download/"
+                     "portable/PDFStudio-portable.zip")
+
+
+def _bundle_base():
+    """Version of the installed bundle's libraries, or None when running from
+    source (where the libraries are whatever is installed in the environment)."""
+    if not getattr(sys, "frozen", False):
+        return None
+    import json
+    try:
+        with open(os.path.join(sys._MEIPASS, "bundle.json"), encoding="utf-8") as fh:
+            return str(json.load(fh).get("base", "0"))
+    except Exception:
+        return "0"          # a bundle from before this feature: base unknown
+
+
+def _needs_full_download(meta):
+    need = str((meta or {}).get("needs_base", "") or "")
+    base = _bundle_base()
+    return bool(need) and base is not None and updater.is_newer(need, base)
+
+
 @app.route("/api/update/check", methods=["POST", "GET"])
 def update_check():
-    return jsonify(**updater.check())
+    info = updater.check()
+    meta = info.pop("_meta", None)
+    if info.get("ok") and info.get("available") and _needs_full_download(meta):
+        info["full"] = True
+        info["download"] = FULL_DOWNLOAD_URL
+    return jsonify(**info)
+
+
+@app.route("/api/update/download", methods=["POST"])
+def update_download():
+    """Open the full download in the user's default browser."""
+    try:
+        webbrowser.open(FULL_DOWNLOAD_URL)
+    except Exception as e:
+        return jsonify(ok=False, error=str(e), download=FULL_DOWNLOAD_URL)
+    return jsonify(ok=True, download=FULL_DOWNLOAD_URL)
 
 
 @app.route("/api/version")
@@ -1826,7 +1870,15 @@ def app_version():
 
 @app.route("/api/update/apply", methods=["POST"])
 def update_apply():
-    return jsonify(**updater.apply())
+    info = updater.check()
+    if not info.get("ok"):
+        info.pop("_meta", None)
+        return jsonify(**info)
+    meta = info.get("_meta")
+    if info.get("available") and _needs_full_download(meta):
+        return jsonify(ok=False, full=True, download=FULL_DOWNLOAD_URL,
+                       error="this version needs a full download")
+    return jsonify(**updater.apply(meta if info.get("available") else None))
 
 
 @app.route("/api/update/rollback", methods=["POST"])

@@ -275,6 +275,17 @@ def main():
     step(4, "Drawing the application icon")
     make_icon(py)
 
+    # Stamp the bundle with the version whose libraries it carries, so the app
+    # can tell whether a later release is a small update or needs a full download.
+    base = "0"
+    try:
+        base = open(os.path.join(HERE, ".base-version"), encoding="utf-8").read().strip() or "0"
+    except OSError:
+        pass
+    with open(os.path.join(BUILD, "bundle.json"), "w", encoding="utf-8") as fh:
+        fh.write('{"base": "%s"}' % base)
+    print(f"  bundle base version: {base}")
+
     step(5, "Packaging (this takes a few minutes)")
     sep = ";" if IS_WIN else ":"
     cmd = [
@@ -288,6 +299,7 @@ def main():
         "--specpath", BUILD,
         "--add-data", f"{os.path.join(HERE, 'templates')}{sep}templates",
         "--add-data", f"{os.path.join(HERE, 'fonts')}{sep}fonts",
+        "--add-data", f"{os.path.join(BUILD, 'bundle.json')}{sep}.",
         "--hidden-import", "app",
         "--hidden-import", "brand",
         "--paths", HERE,

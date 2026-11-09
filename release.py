@@ -31,6 +31,9 @@ import datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "dist", "release")
 CONTENT = ["app.py", "editing.py", "templates/index.html"]
+# The version whose bundle (libraries, icons, desktop.py) a colleague must have
+# installed to take small updates safely. Raised by `--full`.
+BASE_FILE = os.path.join(HERE, ".base-version")
 
 sys.path.insert(0, HERE)
 import updater                                   # noqa: E402
@@ -159,6 +162,13 @@ def set_channel(url):
     open(path, "w", encoding="utf-8").write(source)
 
 
+def read_base():
+    try:
+        return open(BASE_FILE, encoding="utf-8").read().strip()
+    except OSError:
+        return ""
+
+
 def build(version, notes, repo):
     os.makedirs(OUT, exist_ok=True)
     zip_path = os.path.join(OUT, "update.zip")
@@ -187,6 +197,9 @@ def build(version, notes, repo):
         "notes": notes,
         "date": datetime.date.today().isoformat(),
     }
+    base = read_base()
+    if base:
+        meta["needs_base"] = base
     with open(meta_path, "w", encoding="utf-8") as fh:
         json.dump(meta, fh, indent=2, ensure_ascii=False)
     return zip_path, meta_path, meta
@@ -260,10 +273,28 @@ def main():
     ap.add_argument("--init", action="store_true", help="create the signing key")
     ap.add_argument("--force", action="store_true", help="with --init, replace the key")
     ap.add_argument("--publish", action="store_true", help="upload to GitHub Releases")
+    ap.add_argument("--full", action="store_true",
+                    help="this release needs a new portable zip (new libraries, icons, "
+                         "desktop.py). Builds it but does not publish yet.")
+    ap.add_argument("--publish-pending", action="store_true",
+                    help="publish the release built earlier with --full, after the new "
+                         "zip has been uploaded")
     ap.add_argument("--reseal", action="store_true",
                     help="re-apply the existing signing key to updater.py")
     args = ap.parse_args()
 
+    if args.publish_pending:
+        meta_file = os.path.join(OUT, "update.json")
+        zip_file = os.path.join(OUT, "update.zip")
+        if not (os.path.exists(meta_file) and os.path.exists(zip_file)):
+            die("Nothing to publish. Run:  release.py X.Y.Z --full -m \"...\"  first.")
+        pending = json.load(open(meta_file, encoding="utf-8"))
+        repo = args.repo.strip()
+        if not repo:
+            die("Publishing needs the repository name (--repo owner/name).")
+        publish(pending["version"], pending.get("notes", ""), repo, [zip_file, meta_file])
+        print("\n  Everyone running PDF Studio will now be offered the full download.")
+        return
     if args.reseal:
         print("Signing key re-applied to updater.py."
               if reseal() else "No signing key found — run --init first.")
@@ -305,6 +336,9 @@ def main():
     if repo:
         set_channel(f"https://github.com/{repo}/releases/latest/download/update.json")
     set_version(args.version)
+    if args.full:
+        with open(BASE_FILE, "w", encoding="utf-8") as fh:
+            fh.write(args.version)
 
     zip_path, meta_path, meta = build(args.version, args.notes, repo)
     size = os.path.getsize(zip_path) / 1024
@@ -317,13 +351,22 @@ def main():
     print(f"  Checksum: {meta['sha256'][:16]}…")
     print(f"  Signed   ✓")
 
-    if args.publish:
+    if args.full:
+        print("\n  This release needs a new portable zip, so it is NOT published yet.")
+        print("  Do these three steps, in this order:")
+        print("    1. build the zip:   build_app.py")
+        print("    2. upload it:       gh release upload portable dist\\PDFStudio-portable.zip"
+              f" --repo {repo or 'owner/name'} --clobber")
+        print(f"    3. announce it:     release.py --publish-pending --repo {repo or 'owner/name'}")
+        print("  Announcing before the zip is uploaded would send people to the old one.")
+    elif args.publish:
         publish(args.version, args.notes, repo, [zip_path, meta_path])
     else:
         print("\n  Not uploaded. Attach both files to a GitHub release, or run")
         print(f"  again with:  --repo {repo or 'owner/name'} --publish")
 
-    print("\n  Everyone running PDF Studio will be offered this on their next start.")
+    if not args.full:
+        print("\n  Everyone running PDF Studio will be offered this on their next start.")
     if os.name == "nt":
         try:
             input("\nPress Enter to close this window...")
