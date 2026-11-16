@@ -214,6 +214,50 @@ html[dir="rtl"] .pv-ico{display:inline-block;transform:scaleX(-1)}
 @media (max-width:760px){.wrap{flex-direction:column}nav{width:auto;flex:0 0 auto;border-inline-end:0;border-bottom:1px solid var(--line);
   display:flex;flex-wrap:wrap;gap:4px}nav .sep{display:none}nav button{width:auto}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation-duration:.01ms!important}}
+
+/* ===== polish pass (type scale, rhythm, surfaces, header calm-down) ===== */
+:root{--shadow-md:0 1px 2px rgba(20,28,50,.06),0 8px 20px -8px rgba(20,28,50,.14)}
+html[data-theme="dark"]{--shadow-md:0 1px 2px rgba(0,0,0,.4),0 10px 24px -10px rgba(0,0,0,.6)}
+*{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+::selection{background:var(--ring)}
+body{-webkit-font-smoothing:antialiased}
+header{padding:10px 24px;gap:8px 14px}
+header h1{font-size:17px;letter-spacing:-.01em}
+header .badge,header .hbtn{font:inherit;font-size:12.5px;line-height:1.2;min-height:30px;display:inline-flex;align-items:center}
+header .badge{cursor:default}
+header a.badge,header button.badge{cursor:pointer}
+header .hbadges .badge:nth-child(-n+2){background:none;border-color:transparent;padding-inline:6px}
+header a.badge[href*="paypal"]{color:var(--acc);border-color:color-mix(in srgb,var(--acc) 35%,var(--line));background:color-mix(in srgb,var(--acc) 8%,transparent)}
+header button.badge{color:var(--txt)}
+@media (max-width:1280px){header .hsub{display:none}}
+nav{flex:0 0 228px;width:228px;padding:14px 10px}
+nav button{position:relative;padding:9px 12px;font-size:14px;line-height:1.35}
+nav button.on::before{content:"";position:absolute;inset-inline-start:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--acc)}
+nav .sep{margin:10px 8px}
+main{padding:30px 36px 48px;max-width:1120px;margin-inline:auto;width:100%}
+h2{font-size:24px;font-weight:700;letter-spacing:-.015em;line-height:1.25;margin-bottom:6px}
+.sub{font-size:14px;line-height:1.65;max-width:68ch;margin-bottom:22px}
+.card{padding:20px 22px;border-radius:14px;box-shadow:var(--shadow-md);margin-bottom:18px}
+.card h3{margin:0 0 4px;font-size:16px;letter-spacing:-.005em}
+label{font-size:13px;margin:14px 0 6px}
+input[type=text],input[type=number],input[type=password],select,textarea{min-height:38px;padding:8px 12px}
+button.btn{min-height:38px;padding:9px 22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),var(--shadow);transition:background .12s,transform .08s}
+button.btn:active:not(:disabled){transform:translateY(1px)}
+button.ghost,button.mini{box-shadow:none}
+button.btn.mini{padding:4px 10px;min-height:0}
+.dlg .acts .btn{min-height:36px}
+.drop{padding:44px 24px;border-radius:14px;transition:border-color .15s,background .15s,color .15s}
+.drop:hover{border-color:color-mix(in srgb,var(--acc) 60%,var(--line));color:var(--txt)}
+.up-wrap{display:flex;justify-content:center;color:var(--acc)}
+.up-wrap svg{display:block}
+.f,.pg{transition:transform .15s,box-shadow .15s,border-color .15s}
+.f:hover,.pg:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.pg.del:hover{transform:none}
+.cp-opt{padding:16px 18px}
+.chip{padding:7px 13px}
+tbody tr:hover td{background:color-mix(in srgb,var(--panel2) 70%,transparent)}
+html[data-theme="dark"] .card{box-shadow:inset 0 1px 0 rgba(255,255,255,.035),var(--shadow-md)}
+@media (max-width:760px){main{padding:20px 16px 36px;max-width:none}h2{font-size:21px}nav{width:auto;flex:0 0 auto;padding:8px}nav button{padding:8px 11px}nav button.on::before{display:none}header{padding:10px 16px}}
 </style>
 <script>
 try{var _t=localStorage.getItem('pdfs_theme'),_l=localStorage.getItem('pdfs_lang');
@@ -229,7 +273,7 @@ if(_l==='ar'){_h.lang='ar';_h.dir='rtl';}}catch(e){}
     <span class="badge" id="ver">🔒 Nothing leaves this machine</span>
     <a class="badge" href="https://github.com/3br7many/pdf-studio" target="_blank" rel="noopener">Source · AGPL-3.0</a>
     <a class="badge" href="https://paypal.me/3br7man74" target="_blank" rel="noopener" title="PDF Studio is free. Support is optional.">♥ Support</a>
-    <button class="badge" type="button" onclick="showAbout()" style="cursor:pointer;font:inherit">ℹ About</button>
+    <button class="badge" type="button" onclick="showAbout()">ℹ About</button>
   </div>
   <div class="hctl">
     <button class="hbtn" id="upd-btn" type="button" onclick="checkUpdate(true)" title="Needs an internet connection">🔄 Check for updates</button>
@@ -273,7 +317,7 @@ if(_l==='ar'){_h.lang='ar';_h.dir='rtl';}}catch(e){}
   <div class="sub">Upload PDFs, or images to use as signatures, stamps and logos. Everything is processed locally.</div>
   <div class="card">
     <div class="drop" id="drop">
-      <div style="font-size:34px">⬆️</div>
+      <div class="up-wrap"><svg class="up-ico" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div>
       <div style="margin-top:8px">Drop files here, or click to browse</div>
       <div class="hint">PDF · PNG · JPG — multiple files at once</div>
     </div>
@@ -856,7 +900,7 @@ bind('tx-y','tx-y-v', v => v + '%');
 
 /* ---------- upload ---------- */
 const drop = $('#drop'), picker = $('#picker');
-const DROP_HTML = '<div style="font-size:34px">⬆️</div><div style="margin-top:8px">Drop files here, or click to browse</div><div class="hint">PDF · PNG · JPG — multiple files at once</div>';
+const DROP_HTML = '<div class="up-wrap"><svg class="up-ico" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></div><div style="margin-top:8px">Drop files here, or click to browse</div><div class="hint">PDF · PNG · JPG — multiple files at once</div>';
 drop.onclick = () => picker.click();
 picker.onchange = () => { if (picker.files.length) upload(picker.files); picker.value=''; };
 ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => {

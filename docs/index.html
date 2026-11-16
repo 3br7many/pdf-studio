@@ -1,109 +1,204 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PDF Studio</title>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <meta name="description" content="A free PDF toolkit for Windows that runs on your own computer, with full Arabic support. Merge, split, compress, OCR, edit text in place, sign and more.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap">
+<meta property="og:title" content="PDF Studio">
+<meta property="og:description" content="Free PDF tools that run on your own computer, with full Arabic support.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --bg:#f6f7fb;--panel:#fff;--panel2:#eef0f8;--line:#dde1ee;--fg:#161a2b;--muted:#5b6380;
-  --acc:#5b5bf0;--acc2:#2f8cf0;--accfg:#fff;--code:#eaedf8;--warn:#b26a00;
-  --display:"Sora","Segoe UI",system-ui,sans-serif;--body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
-@media (prefers-color-scheme:dark){:root{--bg:#0e1220;--panel:#151a2d;--panel2:#1c2238;--line:#272e49;--fg:#e8ebf7;--muted:#97a0c0;--acc:#8a8cff;--acc2:#5eb0ff;--accfg:#0e1220;--code:#10152a;--warn:#f0b04a;color-scheme:dark}}
+  --bg:#f7f7fa;--panel:#ffffff;--soft:#eff0f6;--line:#dfe2ec;--fg:#151a2a;--muted:#586079;
+  --acc:#4658d8;--acc-fg:#ffffff;--acc-soft:rgba(70,88,216,.09);--warn:#a8650a;--code:#ebedf6;
+  --shadow:0 1px 2px rgba(20,26,50,.05),0 18px 40px -18px rgba(20,26,50,.28);
+  --font:"IBM Plex Sans","IBM Plex Sans Arabic","Segoe UI",Tahoma,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f121b;--panel:#161a26;--soft:#1c2130;--line:#283046;--fg:#e9ecf6;--muted:#9aa3bd;
+  --acc:#8d9cff;--acc-fg:#0f121b;--acc-soft:rgba(141,156,255,.12);--warn:#efb257;--code:#11151f;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -18px rgba(0,0,0,.7);color-scheme:dark}}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 var(--body)}
-.w{max-width:960px;margin:0 auto;padding:0 max(18px,env(safe-area-inset-left))}
-header.hero{background:linear-gradient(120deg,#6a4cf0,#2f8cf0);color:#fff}
-.hero .w{padding-block:56px 60px}
-.hero .mark{width:64px;height:64px;border-radius:16px;display:block;margin:0 0 18px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
-.hero h1{font:700 clamp(34px,6vw,52px)/1.08 var(--display);margin:0 0 14px;letter-spacing:-.02em}
-.hero p{font-size:18px;max-width:46ch;margin:0 0 26px;opacity:.95}
-.btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.btn{display:inline-block;font:600 16px var(--body);padding:13px 22px;border-radius:10px;text-decoration:none}
-.btn.main{background:#fff;color:#2b2fa8}
-.btn.ghost{border:1.5px solid rgba(255,255,255,.65);color:#fff}
-.small{font-size:13.5px;opacity:.9;margin-top:14px}
-section{padding-block:44px 0}
-h2{font:600 24px/1.25 var(--display);margin:0 0 8px}
-.lede{color:var(--muted);margin:0 0 20px;max-width:62ch}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.card b{display:block;margin-bottom:2px}
-.card span{color:var(--muted);font-size:14.5px}
-ol.steps{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:s}
-ol.steps li{counter-increment:s;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 56px;position:relative}
-ol.steps li::before{content:counter(s);position:absolute;left:16px;top:13px;width:26px;height:26px;border-radius:50%;background:var(--acc);color:var(--accfg);font:600 14px/26px var(--display);text-align:center}
-.note{border-left:3px solid var(--warn);background:var(--panel);border-radius:0 10px 10px 0;padding:10px 16px;margin-top:14px}
-code{font:13.5px var(--mono);background:var(--code);padding:1px 6px;border-radius:5px}
-.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-a{color:var(--acc)}
-footer{margin-top:56px;border-top:1px solid var(--line);padding-block:24px 40px;color:var(--muted);font-size:14px}
-a:focus-visible,.btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+html[lang="ar"] body{font-family:"IBM Plex Sans Arabic","IBM Plex Sans","Segoe UI",Tahoma,system-ui,sans-serif}
+html[lang="en"] .ar,html[lang="ar"] .en{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 var(--font);-webkit-font-smoothing:antialiased}
+.w{max-width:1040px;margin:0 auto;padding-inline:max(20px,env(safe-area-inset-left))}
+a{color:var(--acc);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,.btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:8px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:650;font-size:17px;color:var(--fg);text-decoration:none;letter-spacing:-.01em}
+.brand img{width:32px;height:32px;border-radius:9px;display:block}
+.lang{font:500 14px var(--font);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:99px;padding:6px 14px;cursor:pointer}
+.lang:hover{background:var(--soft)}
+
+/* hero */
+.hero{padding-block:44px 36px}
+h1{font-size:clamp(34px,5.6vw,56px);line-height:1.12;letter-spacing:-.025em;font-weight:700;margin:0 0 18px;max-width:20ch}
+html[lang="ar"] h1{letter-spacing:0;line-height:1.3;max-width:20ch}
+.lead{font-size:clamp(17px,2.2vw,20px);color:var(--muted);max-width:52ch;margin:0 0 28px;line-height:1.65}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 16px var(--font);padding:13px 22px;border-radius:10px;text-decoration:none;transition:transform .08s,background .12s}
+.btn.main{background:var(--acc);color:var(--acc-fg);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 2px rgba(20,26,50,.2)}
+.btn.main:hover{background:color-mix(in srgb,var(--acc) 88%,#000)}
+@media (prefers-color-scheme:dark){.btn.main:hover{background:color-mix(in srgb,var(--acc) 88%,#fff)}}
+.btn.alt{background:var(--panel);color:var(--fg);border:1px solid var(--line)}
+.btn.alt:hover{background:var(--soft)}
+.btn:active{transform:translateY(1px)}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:6px 22px;padding:0;margin:22px 0 0;color:var(--muted);font-size:14.5px}
+.facts li{display:flex;align-items:center;gap:8px}
+.facts svg{flex:none;color:var(--acc)}
+
+/* screenshot */
+.shot{margin:20px 0 0}
+.frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow);
+  -webkit-mask-image:linear-gradient(#000 82%,transparent);mask-image:linear-gradient(#000 82%,transparent)}
+.frame img{display:block;width:100%;height:auto}
+.shot figcaption{color:var(--muted);font-size:13.5px;margin-top:12px}
+
+/* sections */
+section{padding-block:56px 0}
+h2{font-size:clamp(24px,3.2vw,30px);line-height:1.25;letter-spacing:-.015em;font-weight:650;margin:0 0 10px}
+html[lang="ar"] h2{letter-spacing:0;line-height:1.4}
+.lede{color:var(--muted);max-width:60ch;margin:0 0 26px}
+.jobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:30px 44px}
+.jobs h3{font-size:17px;margin:0 0 6px;font-weight:650}
+.jobs p{margin:0;color:var(--muted);font-size:15.5px}
+.jobs strong{color:var(--fg);font-weight:600}
+
+/* install */
+.install{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px}
+@media (max-width:820px){.install{grid-template-columns:1fr}}
+ol.steps{margin:0;padding-inline-start:22px;display:grid;gap:14px}
+ol.steps li::marker{color:var(--acc);font-weight:700}
+.callout{background:var(--panel);border:1px solid var(--line);border-inline-start:3px solid var(--warn);border-radius:12px;padding:16px 18px;font-size:15px;color:var(--muted)}
+.callout strong{color:var(--fg)}
+code{font:13.5px var(--mono);background:var(--code);padding:2px 7px;border-radius:6px;direction:ltr;unicode-bidi:isolate}
+
+/* trust */
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px 40px}
+.trust h3{font-size:16px;margin:0 0 6px;font-weight:650}
+.trust p{margin:0;color:var(--muted);font-size:15.5px}
+
+footer{margin-top:72px;border-top:1px solid var(--line);padding-block:28px 48px;color:var(--muted);font-size:14px}
+footer p{margin:0 0 8px;max-width:78ch}
+.sep{opacity:.5;margin-inline:6px}
+@media (max-width:560px){.hero{padding-top:28px}.btn{width:100%;justify-content:center}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-<header class="hero"><div class="w">
-  <img class="mark" src="logo.svg" alt="" width="64" height="64">
-  <h1>PDF Studio</h1>
-  <p>A free PDF toolkit for Windows that runs entirely on your computer, with full Arabic support.</p>
-  <div class="btns">
-    <a class="btn main" href="https://github.com/3br7many/pdf-studio/releases/download/portable/PDFStudio-portable.zip">Download for Windows</a>
-    <a class="btn ghost" href="https://github.com/3br7many/pdf-studio">Source code</a>
+<div class="w">
+  <div class="top">
+    <a class="brand" href="#"><img src="logo.svg" alt="" width="32" height="32">PDF Studio</a>
+    <button class="lang" id="lang" type="button" aria-label="Language"><span class="en">العربية</span><span class="ar">English</span></button>
   </div>
-  <div class="small">About 130 MB · no installation · no administrator rights · free and open source (AGPL-3.0)</div>
-</div></header>
 
-<main class="w">
-  <section>
-    <h2>What you can do</h2>
-    <p class="lede">Eleven tools in one window. Results can be chained, so you can merge, watermark, compress and protect in a row.</p>
-    <div class="grid">
-      <div class="card"><b>Merge &amp; split</b><span>Combine files in the order you choose, or cut by pages, ranges or every N pages.</span></div>
-      <div class="card"><b>Organize pages</b><span>Delete, rotate and reorder pages with thumbnails.</span></div>
-      <div class="card"><b>Compress</b><span>Analyze first, then Lossless, Balanced or Maximum, with a visual check against the original.</span></div>
-      <div class="card"><b>Edit page</b><span>Erase or retype text in the original font. Erasing really removes the old text.</span></div>
-      <div class="card"><b>Extract &amp; convert</b><span>Text, Word, Excel tables, images and pages as PNG.</span></div>
-      <div class="card"><b>OCR</b><span>Make scanned pages searchable, Arabic included.</span></div>
-      <div class="card"><b>Security</b><span>AES-256 encryption with permissions, and password removal.</span></div>
-      <div class="card"><b>Watermark, sign &amp; forms</b><span>Text or logo watermarks, signature stamps and fillable forms.</span></div>
+  <header class="hero">
+    <h1><span class="en">PDF tools that run on your own computer.</span><span class="ar">أدوات PDF تعمل على جهازك، بدعم كامل للعربية.</span></h1>
+    <p class="lead"><span class="en">Merge, split, compress, OCR, edit text in place and more, without uploading a single file. Free and open source, for Windows.</span><span class="ar">ادمج وقسّم وضغّط وعدّل نص ملفاتك، من غير ما ترفعها على أي موقع. مجاني ومفتوح المصدر لويندوز.</span></p>
+    <div class="btns">
+      <a class="btn main" href="https://github.com/3br7many/pdf-studio/releases/download/portable/PDFStudio-portable.zip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 11l5 5 5-5"/><path d="M5 20h14"/></svg>
+        <span class="en">Download for Windows</span><span class="ar">تحميل لويندوز</span></a>
+      <a class="btn alt" href="https://github.com/3br7many/pdf-studio"><span class="en">View the source code</span><span class="ar">الكود المصدري</span></a>
     </div>
-  </section>
+    <ul class="facts">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span class="en">No installation, about 130 MB</span><span class="ar">من غير تثبيت، حوالي 130 ميجابايت</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span class="en">No administrator rights</span><span class="ar">من غير صلاحيات المسؤول</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg><span class="en">Free, AGPL-3.0</span><span class="ar">مجاني، رخصة AGPL-3.0</span></li>
+    </ul>
+  </header>
 
-  <section>
-    <h2>Private by design</h2>
-    <p class="lede">The app runs a small server on 127.0.0.1 only. Your files stay on your computer. The only network use is the optional check for a newer version.</p>
-  </section>
-
-  <section>
-    <h2>Get started</h2>
-    <ol class="steps">
-      <li><b>Download</b> the zip and extract it anywhere, for example your Desktop.</li>
-      <li><b>Open</b> the extracted folder and run <code>PDF Studio.exe</code>.</li>
-      <li>If Windows shows <b>"Windows protected your PC"</b>, click <b>More info</b>, then <b>Run anyway</b>.</li>
-    </ol>
-    <div class="note">The app is not code-signed yet, so Windows shows that warning for new downloads. If Smart App Control is turned on, Windows may block it with no option to continue. In that case it cannot run on that computer until the app is signed.</div>
-    <p class="lede" style="margin-top:16px">The SHA-256 checksum of the download is in the <a href="https://github.com/3br7many/pdf-studio/releases/tag/portable">release notes</a>, so you can confirm the file is intact.</p>
-  </section>
-
-  <section>
-    <div class="two">
-      <div>
-        <h2>Stays up to date</h2>
-        <p class="lede">The app checks for a newer signed version and offers it with one click. It refuses any update whose signature does not match.</p>
-      </div>
-      <div>
-        <h2>Free and open source</h2>
-        <p class="lede">Released under the GNU Affero General Public License v3.0. Read the code, report problems or suggest features on <a href="https://github.com/3br7many/pdf-studio/issues">GitHub</a>.</p>
-        <p class="lede">PDF Studio will stay free. If it saves you time and you want to support it, you can <a href="https://paypal.me/3br7man74">leave a tip</a>. It is entirely optional.</p>
-      </div>
+  <figure class="shot">
+    <div class="frame">
+      <picture class="en"><source media="(prefers-color-scheme:dark)" srcset="shot-en-dark.webp"><img src="shot-en-light.webp" width="1600" height="1000" alt="The Compress screen of PDF Studio, showing what takes up space in a file and three compression levels."></picture>
+      <picture class="ar"><source media="(prefers-color-scheme:dark)" srcset="shot-ar-dark.webp"><img src="shot-ar-light.webp" width="1600" height="1000" alt="شاشة الضغط في PDF Studio، تعرض ما يشغل مساحة الملف وثلاثة مستويات للضغط."></picture>
     </div>
-  </section>
-</main>
+    <figcaption><span class="en">The Compress tool analyzes a file first, then lets you choose how far to go.</span><span class="ar">أداة الضغط تحلل الملف أولاً، ثم تختار مدى الضغط.</span></figcaption>
+  </figure>
 
-<footer><div class="w">By Abdelrahman Younes, IT Support Engineer. <a href="https://github.com/3br7many">GitHub</a> · <a href="https://www.linkedin.com/in/abdelrahman-younes-235515400">LinkedIn</a> · <a href="mailto:abdoyones74@gmail.com">abdoyones74@gmail.com</a>. Provided as is, without warranty. Built on PyMuPDF (AGPL-3.0) and other open source libraries; the Amiri typeface is under the SIL Open Font License.</div></footer>
+  <main>
+    <section>
+      <h2><span class="en">What you can do with it</span><span class="ar">إيه اللي تقدر تعمله بيها</span></h2>
+      <p class="lede"><span class="en">Eleven tools in one window. Results can be chained, so you can merge, watermark, compress and protect in a row.</span><span class="ar">إحدى عشرة أداة في نافذة واحدة. تقدر تكمّل على نتيجة أداة بأداة تانية: دمج ثم علامة مائية ثم ضغط ثم حماية.</span></p>
+      <div class="jobs">
+        <div>
+          <h3><span class="en">Put a file in order</span><span class="ar">رتّب الملف</span></h3>
+          <p><span class="en"><strong>Merge</strong> files in the order you choose, <strong>split</strong> by pages, ranges or every N pages, and <strong>organize</strong> pages by deleting, rotating and reordering them with thumbnails.</span><span class="ar"><strong>ادمج</strong> الملفات بالترتيب اللي تحدده، و<strong>قسّم</strong> بالصفحات أو النطاقات أو كل ن صفحة، و<strong>رتّب الصفحات</strong> بالحذف والتدوير وإعادة الترتيب مع صور مصغّرة.</span></p>
+        </div>
+        <div>
+          <h3><span class="en">Make it smaller</span><span class="ar">صغّر حجمه</span></h3>
+          <p><span class="en"><strong>Compress</strong> analyzes the file first, then offers Lossless, Balanced or Maximum, with a side-by-side check against the original before you keep the result.</span><span class="ar"><strong>الضغط</strong> يحلل الملف أولاً، ثم يعرض بدون فقد أو متوازن أو أقصى ضغط، مع مقارنة جنباً إلى جنب بالأصل قبل ما تحتفظ بالنتيجة.</span></p>
+        </div>
+        <div>
+          <h3><span class="en">Change the text itself</span><span class="ar">عدّل النص نفسه</span></h3>
+          <p><span class="en"><strong>Edit page</strong> erases or retypes text in the original font. Erasing really removes the old text from the file, it is not just covered.</span><span class="ar"><strong>تعديل الصفحة</strong> يمسح النص أو يعيد كتابته بنفس الخط الأصلي. المسح يحذف النص القديم فعلاً من الملف، مش مجرد تغطيته.</span></p>
+        </div>
+        <div>
+          <h3><span class="en">Get content out</span><span class="ar">اسحب المحتوى</span></h3>
+          <p><span class="en"><strong>Extract &amp; convert</strong> to text, Word, Excel tables, images or PNG pages. <strong>OCR</strong> makes scanned pages searchable, Arabic included.</span><span class="ar"><strong>الاستخراج والتحويل</strong> إلى نص أو Word أو جداول Excel أو صور أو صفحات PNG. و<strong>التعرف على النص (OCR)</strong> يجعل الصفحات الممسوحة قابلة للبحث، والعربي مدعوم.</span></p>
+        </div>
+        <div>
+          <h3><span class="en">Protect and finish</span><span class="ar">احمِ وأنهِ الملف</span></h3>
+          <p><span class="en"><strong>Security</strong> adds AES-256 encryption with permissions, or removes a password you know. Add text or logo <strong>watermarks</strong>, <strong>signature stamps</strong> and <strong>fill forms</strong>.</span><span class="ar"><strong>الحماية</strong> تضيف تشفير AES-256 مع الصلاحيات، أو تزيل كلمة مرور تعرفها. وتضيف <strong>علامة مائية</strong> بنص أو شعار، و<strong>ختم توقيع</strong>، و<strong>تعبئة النماذج</strong>.</span></p>
+        </div>
+        <div>
+          <h3><span class="en">In your language</span><span class="ar">بلغتك</span></h3>
+          <p><span class="en">The interface switches between English and Arabic, with right-to-left layout, and has light and dark themes.</span><span class="ar">الواجهة تتبدّل بين الإنجليزية والعربية مع اتجاه من اليمين لليسار، وفيها ثيم فاتح وداكن.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="en">Install it in a minute</span><span class="ar">ثبّتها في دقيقة</span></h2>
+      <div class="install">
+        <ol class="steps">
+          <li><span class="en"><strong>Download</strong> the zip and extract it into a folder you will keep, such as your Desktop.</span><span class="ar"><strong>نزّل</strong> ملف الـ zip وفك ضغطه في فولدر ثابت، مثل سطح المكتب.</span></li>
+          <li><span class="en"><strong>Open</strong> the extracted folder and run <code>PDF Studio.exe</code>. Do not run it from inside the zip.</span><span class="ar"><strong>افتح</strong> الفولدر وشغّل <code>PDF Studio.exe</code>. لا تشغّله من داخل ملف الـ zip نفسه.</span></li>
+          <li><span class="en">If Windows shows <strong>"Windows protected your PC"</strong>, click <strong>More info</strong>, then <strong>Run anyway</strong>.</span><span class="ar">لو ظهر تحذير <strong>"Windows protected your PC"</strong> اضغط <strong>More info</strong> ثم <strong>Run anyway</strong> للمتابعة.</span></li>
+        </ol>
+        <div>
+          <div class="callout"><span class="en"><strong>Why the warning?</strong> The app is not code-signed yet, so Windows warns about new downloads. If Smart App Control is turned on, Windows may block it with no option to continue. In that case it cannot run on that computer until the app is signed.</span><span class="ar"><strong>ليه التحذير؟</strong> التطبيق غير موقّع برمجياً حتى الآن، فويندوز يحذّر من أي تحميل جديد. ولو كان Smart App Control مفعّلاً قد يمنعه ويندوز تماماً من غير خيار المتابعة، وساعتها لن يعمل على هذا الجهاز حتى يُوقَّع التطبيق.</span></div>
+          <p class="lede" style="margin:16px 0 0"><span class="en">To confirm the file is intact, compare its SHA-256 checksum with the one in the <a href="https://github.com/3br7many/pdf-studio/releases/tag/portable">release notes</a>.</span><span class="ar">للتأكد أن الملف سليم، قارن بصمة SHA-256 للملف بالموجودة في <a href="https://github.com/3br7many/pdf-studio/releases/tag/portable">ملاحظات الإصدار</a>.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="en">Why you can trust it</span><span class="ar">ليه تثق فيها</span></h2>
+      <div class="trust">
+        <div><h3><span class="en">Your files stay put</span><span class="ar">ملفاتك لا تغادر جهازك</span></h3><p><span class="en">The app runs a small server on 127.0.0.1 only. The only network use is the optional check for a newer version.</span><span class="ar">التطبيق يشغّل خادماً صغيراً على 127.0.0.1 فقط. الاستخدام الوحيد للإنترنت هو التحقق الاختياري من وجود نسخة أحدث.</span></p></div>
+        <div><h3><span class="en">Updates are signed</span><span class="ar">التحديثات موقّعة</span></h3><p><span class="en">The app offers a newer version with one click and refuses any update whose signature does not match.</span><span class="ar">يعرض التطبيق النسخة الأحدث بضغطة واحدة، ويرفض أي تحديث لا يطابق توقيعه.</span></p></div>
+        <div><h3><span class="en">Open source</span><span class="ar">مفتوحة المصدر</span></h3><p><span class="en">Released under the GNU Affero General Public License v3.0. Read the code, report problems or suggest features on <a href="https://github.com/3br7many/pdf-studio/issues">GitHub</a>.</span><span class="ar">منشورة برخصة GNU Affero العامة الإصدار 3.0. اقرأ الكود أو أبلغ عن مشكلة أو اقترح ميزة على <a href="https://github.com/3br7many/pdf-studio/issues">GitHub</a>.</span></p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><span class="en">PDF Studio is free and will stay free. If it saves you time and you want to support it, you can <a href="https://paypal.me/3br7man74">leave a tip</a>. It is entirely optional.</span><span class="ar">PDF Studio مجانية وستبقى مجانية. لو وفّرت عليك وقتاً وحابب تدعمها، تقدر <a href="https://paypal.me/3br7man74">تترك تبرعاً</a>. الأمر اختياري تماماً.</span></p>
+    <p><span class="en">By Abdelrahman Younes, IT Support Engineer.</span><span class="ar">من عمل عبدالرحمن يونس، مهندس دعم فني.</span> <a href="https://github.com/3br7many">GitHub</a><span class="sep">/</span><a href="https://www.linkedin.com/in/abdelrahman-younes-235515400">LinkedIn</a><span class="sep">/</span><a href="mailto:abdoyones74@gmail.com">abdoyones74@gmail.com</a></p>
+    <p><span class="en">Provided as is, without warranty. Built on PyMuPDF (AGPL-3.0) and other open source libraries; the Amiri typeface is under the SIL Open Font License.</span><span class="ar">مقدّمة كما هي دون أي ضمان. مبنية على PyMuPDF (AGPL-3.0) ومكتبات مفتوحة المصدر أخرى، وخط Amiri بترخيص SIL Open Font License.</span></p>
+  </footer>
+</div>
+<script>
+(function(){
+  var h=document.documentElement,btn=document.getElementById('lang');
+  var T={en:'PDF Studio, free PDF tools for Windows',ar:'PDF Studio، أدوات PDF مجانية لويندوز'};
+  function set(l){h.lang=l;h.dir=l==='ar'?'rtl':'ltr';document.title=T[l];btn.setAttribute('aria-label',l==='ar'?'اللغة':'Language');
+    try{localStorage.setItem('pdfs_site_lang',l)}catch(e){}}
+  var l='en';
+  try{l=localStorage.getItem('pdfs_site_lang')||((navigator.language||'').toLowerCase().indexOf('ar')===0?'ar':'en')}catch(e){}
+  set(l);
+  btn.addEventListener('click',function(){set(h.lang==='ar'?'en':'ar')});
+})();
+</script>
 </body>
 </html>
